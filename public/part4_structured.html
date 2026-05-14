@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 2 + Admin – GHS Mbonjo CS</title>
+<style>
+* { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+@media print { body { display:none !important; } }
+input, textarea, select { -webkit-user-select:text; user-select:text; }
+:root { --green:#006633;--gold:#FFD700;--dark:#1a1a2e;--card:#16213e;--accent:#0f3460;--text:#e0e0e0;--white:#fff;--red:#e74c3c;--blue:#3498db;--radius:12px; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+.topbar{background:linear-gradient(135deg,var(--green),#004d26);border-bottom:3px solid var(--gold);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--white);}
+.topbar-title span{color:var(--gold);}
+.back-btn{background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.3);color:var(--gold);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600;}
+.tabs{display:flex;background:var(--card);border-bottom:2px solid rgba(255,215,0,0.15);overflow-x:auto;}
+.tab{padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab:hover{color:rgba(255,215,0,0.8);}
+.container{max-width:860px;margin:0 auto;padding:20px 16px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STRUCTURED QUESTION STYLES ── */
+.section-hdr{margin-bottom:16px;}
+.section-hdr h2{font-size:20px;color:var(--gold);font-weight:800;}
+.section-hdr p{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;}
+.q-list{display:flex;flex-direction:column;gap:14px;margin-bottom:30px;}
+.q-card{background:var(--card);border-radius:var(--radius);border:1px solid rgba(255,255,255,0.07);overflow:hidden;transition:all 0.3s;}
+.q-card-header{padding:16px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.q-card-header:hover{background:rgba(255,215,0,0.04);}
+.q-num{background:rgba(255,215,0,0.15);color:var(--gold);font-size:12px;font-weight:800;padding:4px 10px;border-radius:10px;white-space:nowrap;}
+.q-info{flex:1;}
+.q-info h3{font-size:14px;color:var(--white);font-weight:700;}
+.q-info .meta{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.q-toggle{color:rgba(255,255,255,0.3);font-size:18px;transition:transform 0.3s;}
+.q-toggle.open{transform:rotate(180deg);}
+.q-body{display:none;padding:18px;border-top:1px solid rgba(255,255,255,0.07);animation:fadeIn 0.3s ease;}
+.q-body.open{display:block;}
+.q-text-block{background:rgba(255,255,255,0.03);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.8;color:rgba(255,255,255,0.85);}
+.q-text-block strong{color:var(--gold);}
+.part-label{font-size:13px;font-weight:700;color:var(--blue);margin:12px 0 6px;}
+.marks-badge{display:inline-block;background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);color:var(--blue);font-size:10px;padding:2px 8px;border-radius:10px;margin-left:8px;font-weight:600;}
+textarea.answer-box{
+  width:100%; padding:12px 14px;
+  background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);
+  border-radius:8px;color:var(--white);font-size:14px;font-family:inherit;
+  min-height:100px;resize:vertical;margin:6px 0 10px;
+  transition:border-color 0.2s;line-height:1.6;
+  -webkit-user-select:text;user-select:text;
+}
+textarea.answer-box:focus{outline:none;border-color:var(--gold);background:rgba(255,215,0,0.04);}
+.submit-part-btn{padding:10px 20px;background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;transition:all 0.3s;text-transform:uppercase;letter-spacing:0.5px;}
+.submit-part-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,215,0,0.4);}
+.model-answer{background:rgba(0,102,51,0.15);border:1px solid rgba(0,255,100,0.15);border-radius:8px;padding:14px 16px;margin-top:10px;display:none;animation:fadeIn 0.3s ease;}
+.model-answer.show{display:block;}
+.model-answer h4{color:#2ecc71;font-size:13px;margin-bottom:8px;}
+.model-answer .points{list-style:none;padding:0;}
+.model-answer .points li{font-size:13px;color:rgba(255,255,255,0.8);padding:4px 0 4px 20px;position:relative;border-bottom:1px solid rgba(255,255,255,0.05);line-height:1.5;}
+.model-answer .points li::before{content:'✔';position:absolute;left:0;color:#2ecc71;font-size:12px;}
+.grader-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.grader-row label{font-size:13px;color:rgba(255,255,255,0.6);}
+.grade-input{width:60px;padding:7px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:6px;color:var(--white);font-size:13px;-webkit-user-select:text;user-select:text;}
+.save-grade-btn{padding:7px 16px;background:rgba(46,204,113,0.2);border:1px solid rgba(46,204,113,0.4);color:#2ecc71;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.save-grade-btn:hover{background:rgba(46,204,113,0.35);}
+.grade-saved{font-size:12px;color:#2ecc71;display:none;}
+.total-marks{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:10px 16px;margin-top:14px;font-size:14px;font-weight:700;color:var(--gold);text-align:center;}
+
+/* ── ADMIN PANEL ── */
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
+.admin-stat{background:var(--card);border-radius:var(--radius);padding:18px;text-align:center;border:1px solid rgba(255,215,0,0.1);}
+.admin-stat .an{font-size:28px;font-weight:800;color:var(--gold);}
+.admin-stat .al{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;}
+.admin-table-wrap{background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
+.admin-table-wrap h3{padding:14px 16px;font-size:15px;color:var(--gold);border-bottom:1px solid rgba(255,255,255,0.06);}
+.tbl-wrap{overflow-x:auto;}
+table.atbl{width:100%;border-collapse:collapse;font-size:13px;}
+table.atbl th{background:rgba(255,215,0,0.1);color:var(--gold);padding:10px 12px;text-align:left;border:none;white-space:nowrap;}
+table.atbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.75);white-space:nowrap;}
+table.atbl tr:hover td{background:rgba(255,255,255,0.03);}
+.pass-badge{background:rgba(46,204,113,0.15);color:#2ecc71;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;}
+.fail-badge{background:rgba(231,76,60,0.15);color:#ff6b6b;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;}
+.empty-msg{text-align:center;padding:30px;color:rgba(255,255,255,0.25);font-size:13px;}
+.admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.act-btn{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+.act-btn.danger{background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#ff6b6b;}
+.act-btn.success{background:rgba(46,204,113,0.2);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;}
+.act-btn:hover{opacity:0.8;transform:translateY(-1px);}
+.search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.search-input{flex:1;min-width:160px;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--white);font-size:13px;-webkit-user-select:text;user-select:text;}
+.search-input:focus{outline:none;border-color:var(--gold);}
+.student-detail{background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:var(--radius);padding:16px;margin-bottom:14px;display:none;}
+.student-detail.show{display:block;animation:fadeIn 0.3s ease;}
+.sd-name{font-size:16px;font-weight:800;color:var(--gold);margin-bottom:4px;}
+.sd-cin{font-size:12px;color:rgba(255,255,255,0.4);}
+.sd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px;}
+.sd-item{background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;text-align:center;}
+.sd-item .v{font-size:18px;font-weight:800;color:var(--gold);}
+.sd-item .l{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+
+@media(max-width:480px){
+  .container{padding:12px;}
+  .tabs .tab{padding:10px 14px;font-size:12px;}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="back-btn" onclick="window.location.href='part2_platform.html'">← Back</button>
+  <div class="topbar-title">CS e-Learning &nbsp;·&nbsp; <span id="pageTitle">Paper 2</span></div>
+  <div style="font-size:12px;color:var(--gold);font-weight:700" id="userBadgeTop"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('structured',this)">📄 Structured Questions (P2)</div>
+  <div class="tab" onclick="switchTab('admin',this)" id="adminTab" style="display:none">🔧 Admin Panel</div>
+</div>
+
+<div class="container">
+
+<!-- ── STRUCTURED QUESTIONS ── -->
+<div id="tab-structured" style="animation:fadeIn 0.3s ease">
+  <div class="section-hdr">
+    <h2>📄 Paper 2 – Structured Questions</h2>
+    <p>Answer each part, then reveal the model answer and marking guide. Your teacher can grade your responses.</p>
+  </div>
+  <div class="q-list" id="questionList"></div>
+</div>
+
+<!-- ── ADMIN PANEL ── -->
+<div id="tab-admin" style="display:none;animation:fadeIn 0.3s ease">
+  <div class="section-hdr">
+    <h2>🔧 Admin Dashboard</h2>
+    <p>Monitor student access, quiz scores, and activity. CIN: ADMIN2026</p>
+  </div>
+
+  <div class="admin-grid" id="adminStats"></div>
+
+  <!-- STUDENT LOOKUP -->
+  <div class="admin-table-wrap">
+    <h3>🔍 Student Lookup</h3>
+    <div style="padding:14px">
+      <div class="search-row">
+        <input class="search-input" id="studentSearch" placeholder="Search by name or CIN…" oninput="searchStudents()">
+      </div>
+      <div class="student-detail" id="studentDetail"></div>
+      <div class="tbl-wrap">
+        <table class="atbl" id="studentTable">
+          <thead><tr><th>#</th><th>CIN</th><th>Name</th><th>Logins</th><th>Total Time</th><th>Quiz Avg</th><th>Actions</th></tr></thead>
+          <tbody id="studentBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCESS LOG -->
+  <div class="admin-table-wrap">
+    <h3>📋 Login History (Last 50)</h3>
+    <div class="tbl-wrap">
+      <table class="atbl">
+        <thead><tr><th>#</th><th>CIN</th><th>Name</th><th>Login Time</th><th>Duration</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUIZ RESULTS -->
+  <div class="admin-table-wrap">
+    <h3>🏆 Quiz Results</h3>
+    <div class="tbl-wrap">
+      <table class="atbl">
+        <thead><tr><th>CIN</th><th>Name</th><th>Topic</th><th>Score</th><th>Correct</th><th>Date</th></tr></thead>
+        <tbody id="quizBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="admin-actions">
+    <button class="act-btn success" onclick="window.open('/api/export?token=ADMIN2026','_blank')">📥 Export All Data (CSV)</button>
+    <button class="act-btn success" onclick="renderAdmin()">🔄 Refresh Data</button>
+    <button class="act-btn danger" onclick="clearServer('sessions')">🗑️ Clear Sessions</button>
+    <button class="act-btn danger" onclick="clearServer('quiz')">🗑️ Clear Quiz Results</button>
+  </div>
+  <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.25);text-align:center">
+    👨‍🏫 Teacher: Mr Ngwana Joshua &nbsp;·&nbsp; GHS Mbonjo Limbe CS Department
+  </div>
+</div>
+
+</div><!-- container -->
+
+<script>
+// PROTECTION
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','p','s','u','a'].includes(e.key.toLowerCase()))e.preventDefault();
+  if(e.key==='F12')e.preventDefault();
+});
+
+// SESSION
+const userCIN = sessionStorage.getItem('userCIN');
+const userName = sessionStorage.getItem('userName');
+const isAdmin = sessionStorage.getItem('isAdmin')==='true';
+if(!userCIN){ window.location.href='index.html'; }
+document.getElementById('userBadgeTop').textContent='👤 '+(userName||'').split(' ')[0];
+if(isAdmin){ document.getElementById('adminTab').style.display='block'; }
+
+// Check if coming from admin redirect
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('admin')==='1' && isAdmin){
+  switchTab('admin', document.querySelectorAll('.tab')[1]);
+}
+
+function switchTab(tab, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-structured').style.display = tab==='structured'?'block':'none';
+  document.getElementById('tab-admin').style.display = tab==='admin'?'block':'none';
+  document.getElementById('pageTitle').textContent = tab==='admin'?'Admin':'Paper 2';
+  if(tab==='admin') renderAdmin();
+}
+
+// ============================================================
+// STRUCTURED QUESTIONS DATA
+// ============================================================
+const STRUCTURED_QS = [
+  {
+    num:1, marks:30, topic:'Information Systems & SDLC',
+    source:'HIHS Mock 2025 – Paper 2', year:'2025',
+    context:`<strong>RAINCO</strong> is a wholesale business specialising in two categories of umbrellas: <em>Standard</em> and <em>Premium</em>. Orders are placed by phone, with doorstep delivery. A minimum order of 25 umbrellas is required. RAINCO plans to expand by introducing online sales and adding two new categories: <em>Sport</em> and <em>Travel</em>. They want to implement a new computerised information system to manage this expansion.`,
+    parts:[
+      { label:'(a)', marks:4, q:'State FOUR components of an Information System that RAINCO would need for their new computerised system.',
+        modelAnswer:['Hardware – computers, servers, smartphones for order taking.','Software – order management application, database software.','Data – product details, customer information, orders.','People – staff trained to use the system (e.g., sales staff, IT support).','Networks – internet connection for online orders, internal LAN.','Procedures – rules and processes for using the system correctly.'],
+        hint:'Name any 4 of the 7 IS components. Give a brief example for each for full marks.'
+      },
+      { label:'(b)', marks:6, q:'Identify THREE types of Information Systems RAINCO could use and explain how each would benefit their business.',
+        modelAnswer:['TPS (Transaction Processing System) – to record and process online/phone orders automatically in real time.','MIS (Management Information System) – to produce sales reports and inventory summaries for middle management to track performance.','DSS (Decision Support System) – to analyse sales trends and help senior managers decide on pricing, stock levels, and product expansion strategies.'],
+        hint:'Name TPS, MIS, DSS or EIS. For each: state what it does AND how it helps RAINCO specifically.'
+      },
+      { label:'(c)', marks:6, q:'Explain the Analysis phase and the Design phase of the SDLC for RAINCO\'s new system.',
+        modelAnswer:['Analysis Phase: Investigate how the current phone-order system works; identify its weaknesses (e.g., slow, error-prone); gather requirements from RAINCO staff using interviews and questionnaires; produce a requirements specification document showing what the new system must do.','Design Phase: Create the technical solution – design the database structure (tables for customers, products, orders), design the user interface (website/app screens), specify hardware and software requirements; create detailed specifications for programmers to follow.'],
+        hint:'For each phase: state what activities are carried out AND give specific examples related to RAINCO.'
+      },
+      { label:'(d)', marks:4, q:'RAINCO chooses PARALLEL changeover for their system implementation. Explain why this is the SAFEST method, and state ONE disadvantage.',
+        modelAnswer:['Parallel changeover runs both the old (phone-based) and new (computerised) systems simultaneously for a period.','It is the safest because if the new system fails or produces errors, the old system is still running as a backup — no orders will be lost.','Disadvantage: It is the most expensive method — RAINCO must pay for and manage both systems at the same time, requiring extra staff and resources.'],
+        hint:'Explain HOW parallel works (both systems run together), WHY it is safe (old system as backup), and ONE cost/resource disadvantage.'
+      },
+      { label:'(e)', marks:10, q:'RAINCO plans to store customer and order data in a database. Design a database schema with at least TWO tables, showing field names, data types, and identify primary and foreign keys. Justify your design choices.',
+        modelAnswer:['Table 1: CUSTOMER(CustomerID [PK, Integer], CustomerName [Text], Phone [Text], Address [Text], Email [Text]).','Table 2: PRODUCT(ProductID [PK, Integer], ProductName [Text], Category [Text], PricePerUnit [Real]).','Table 3: ORDER(OrderID [PK, Integer], CustomerID [FK→CUSTOMER, Integer], OrderDate [Date], TotalAmount [Real]).','Table 4: ORDER_ITEM(OrderItemID [PK], OrderID [FK→ORDER], ProductID [FK→PRODUCT], Quantity [Integer]).','Justification: Splitting into multiple tables reduces data redundancy (customer details stored once, not repeated with every order). Foreign keys create relationships. Primary keys ensure unique identification of each record.'],
+        hint:'Draw the tables clearly. Label PK and FK. Explain WHY you structured it this way (normalisation/reduce redundancy).'
+      }
+    ]
+  },
+  {
+    num:2, marks:25, topic:'Algorithms, Programming & Data Types',
+    source:'HIHS Mock 2025 – Paper 2', year:'2025',
+    context:`A programmer is writing a program to process the scores of 10 students and determine the grade for each. Scores are out of 100.`,
+    parts:[
+      { label:'(a)', marks:4, q:'State the meaning of the following programming terms: (i) Variable  (ii) Algorithm  (iii) Loop  (iv) Syntax error',
+        modelAnswer:['(i) Variable: A named memory location that stores a value which can change during program execution. E.g., score = 75.','(ii) Algorithm: A step-by-step set of instructions for solving a problem or completing a task, with a finite number of steps.','(iii) Loop: A control structure that repeats a block of instructions a set number of times or while a condition is true. E.g., FOR, WHILE loops.','(iv) Syntax error: An error where the code violates the grammar rules of the programming language. Caught by the compiler/interpreter before execution.'],
+        hint:'One sentence definition for each. Try to give a brief example to demonstrate understanding.'
+      },
+      { label:'(b)', marks:6, q:'Write a pseudocode algorithm that: reads 10 student scores, calculates the average, and prints a "Pass" or "Fail" message for each student (pass mark = 50).',
+        modelAnswer:['SET total = 0','FOR i = 1 TO 10','  INPUT score','  SET total = total + score','  IF score >= 50 THEN','    PRINT "Pass"','  ELSE','    PRINT "Fail"','  ENDIF','NEXT i','SET average = total / 10','PRINT "Class average is: " + average'],
+        hint:'Use: SET, FOR...TO...NEXT, INPUT, IF...THEN...ELSE...ENDIF, PRINT. Show loop, accumulator for total, and conditional for grade.'
+      },
+      { label:'(c)', marks:5, q:'Draw a flowchart for the decision part of the above algorithm: reading ONE score and printing Pass or Fail.',
+        modelAnswer:['START → INPUT score → DECISION: score >= 50? → YES: PRINT "Pass" → END','→ NO: PRINT "Fail" → END','Shapes used: Oval (START/END), Parallelogram (INPUT/PRINT), Diamond (DECISION), Rectangles for processes, Arrows for flow.'],
+        hint:'Use correct flowchart symbols: oval=start/end, parallelogram=input/output, diamond=decision, rectangle=process.'
+      },
+      { label:'(d)', marks:4, q:'The programmer encounters THREE types of errors. Describe each type and give an example related to this score program.',
+        modelAnswer:['Syntax Error: Violates language grammar rules. Example: Writing PRNT score instead of PRINT score — the keyword is misspelled.','Logic Error: Program runs but produces wrong output. Example: Using average = total * 10 instead of total / 10 — wrong formula.','Runtime Error: Error occurs during execution. Example: If score is entered as a text value "seventy" and the program tries to add it to total numerically — type mismatch causes a crash.'],
+        hint:'For each error: (1) define it, (2) explain when it occurs, (3) give a specific example from THIS score program.'
+      },
+      { label:'(e)', marks:6, q:'Explain the difference between a COMPILER and an INTERPRETER. State ONE advantage of each.',
+        modelAnswer:['Compiler: Translates the ENTIRE source code into machine code (object code) all at once. Produces a standalone executable file that can be run without the compiler. Advantage: Compiled programs run FASTER because translation is done before execution.','Interpreter: Translates and executes the source code ONE LINE AT A TIME. No separate executable is produced. Advantage: Easier to DEBUG — when an error occurs, execution stops at that line and the error is reported immediately, making it simpler to find and fix.'],
+        hint:'State how each translates (all-at-once vs line-by-line), what they produce (or don\'t), and a specific advantage of EACH.'
+      }
+    ]
+  },
+  {
+    num:3, marks:25, topic:'Networks, Security & Communication',
+    source:'SW Mock 2026 – Paper 2', year:'2026',
+    context:`A school decides to set up a computer network connecting 30 computers in 3 classrooms. The school also wants to give students internet access and protect the network from external threats.`,
+    parts:[
+      { label:'(a)', marks:6, q:'Describe THREE different network topologies. For each, state ONE advantage and ONE disadvantage.',
+        modelAnswer:['Star Topology: All devices connect to a central hub/switch. Advantage: Easy to manage and add new devices; if one cable fails, only that device is affected. Disadvantage: If the central hub/switch fails, the entire network goes down.','Bus Topology: All devices share a single backbone cable. Advantage: Simple and cheap to set up. Disadvantage: If the backbone cable fails, the entire network fails; performance degrades with more users.','Ring Topology: Each device connects to two others in a circle. Advantage: Equal access for all devices; no collisions. Disadvantage: If one device or connection fails, the whole network can be disrupted.'],
+        hint:'For EACH topology: draw or describe its structure, name ONE advantage, name ONE disadvantage. 2 marks per topology.'
+      },
+      { label:'(b)', marks:4, q:'The school uses a STAR topology. What hardware device is placed at the centre? Explain how it is different from a HUB.',
+        modelAnswer:['The device at the centre of a star topology is a SWITCH (or hub).','A Switch is INTELLIGENT — it reads the MAC address of each data packet and sends it ONLY to the intended destination device. This makes the network more efficient and reduces unnecessary traffic.','A Hub is NOT intelligent — it BROADCASTS every data packet to ALL connected devices, regardless of the intended recipient. All devices receive all data, causing inefficiency and potential security issues.'],
+        hint:'Name the device (switch). Explain switch = sends to specific device only. Hub = broadcasts to all. This distinction is key.'
+      },
+      { label:'(c)', marks:5, q:'Define WAN and LAN. Explain which type of network the school has and how the school connects to the internet.',
+        modelAnswer:['LAN (Local Area Network): A network covering a small geographic area (one building/campus). Owned and managed by one organisation. High speed.','WAN (Wide Area Network): A network covering a large geographic area (country/world). Uses public infrastructure. The Internet is the largest WAN.','The school has a LAN — it covers one campus and is owned by the school.','To connect to the internet, the school uses a ROUTER connected to an ISP (Internet Service Provider) via a MODEM. The router connects the school LAN to the internet (a WAN).'],
+        hint:'Define both. State which one the school has (LAN) and explain the role of router + ISP to connect to internet.'
+      },
+      { label:'(d)', marks:6, q:'Describe FOUR security threats to the school network and suggest a countermeasure for EACH threat.',
+        modelAnswer:['1. Hacking/Unauthorised Access — Countermeasure: Use strong passwords and user authentication; install a Firewall to block unauthorised connections.','2. Malware/Virus — Countermeasure: Install and regularly update antivirus software; educate users not to open suspicious attachments.','3. Phishing — Countermeasure: Train staff and students to identify suspicious emails; use email spam filters.','4. Data Interception (Man-in-the-Middle) — Countermeasure: Use HTTPS/SSL encryption for all internet communication so intercepted data cannot be read.','5. Denial of Service (DoS) Attack — Countermeasure: Use a firewall to detect and block flood traffic; monitor network for unusual spikes.'],
+        hint:'For each threat: name it, briefly explain it, then state a specific countermeasure. 1.5 marks per threat-countermeasure pair.'
+      },
+      { label:'(e)', marks:4, q:'Explain the difference between DATA VERIFICATION and DATA VALIDATION. Give one example of each in the context of a student registration form.',
+        modelAnswer:['Data Verification: Checking that data has been transferred correctly and matches the original source. Example: When a student types their email address twice, the system checks both entries match — double-entry verification.','Data Validation: Computer-automated checking that data is sensible, complete, and in the correct format. Example: The registration form uses a RANGE CHECK to ensure the student\'s age is between 10 and 25 — values outside this range are rejected.'],
+        hint:'Verification = checking correct transfer (human error). Validation = computer checks data is reasonable (format/range/type). Give specific examples on the registration form context.'
+      }
+    ]
+  },
+  {
+    num:4, marks:20, topic:'Logic Gates & Number Systems',
+    source:'GCE & Mock Combined', year:'2024–2026',
+    context:`This question covers digital electronics and number systems — key components of the Computer Science syllabus.`,
+    parts:[
+      { label:'(a)', marks:4, q:'Draw the truth table for a NAND gate with inputs A and B. State what Boolean expression it represents.',
+        modelAnswer:['Truth Table: A=0,B=0→1 | A=0,B=1→1 | A=1,B=0→1 | A=1,B=1→0','Boolean Expression: Output = NOT(A AND B) = A NAND B','The NAND gate only outputs 0 when ALL inputs are 1. In all other combinations, it outputs 1.','NAND is called a "universal gate" because any other gate can be built from NAND gates alone.'],
+        hint:'4 rows in truth table (00,01,10,11). Output is 0 only for row 11. Expression: NOT(A AND B).'
+      },
+      { label:'(b)', marks:4, q:'Apply De Morgan\'s Laws to simplify: (i) NOT(A AND B)  (ii) NOT(A OR B)',
+        modelAnswer:["(i) NOT(A AND B) = (NOT A) OR (NOT B)   [De Morgan's First Law]",'This means: NOT(A.B) = Ā + B̄',"(ii) NOT(A OR B) = (NOT A) AND (NOT B)   [De Morgan's Second Law]",'This means: NOT(A+B) = Ā.B̄','Practical use: A NOR gate = AND gate with inverted inputs. A NAND gate = OR gate with inverted inputs.'],
+        hint:'First law: NOT AND → OR with NOT inputs. Second law: NOT OR → AND with NOT inputs. These are exact opposites.'
+      },
+      { label:'(c)', marks:6, q:'Convert the following: (i) 45 decimal to binary  (ii) Binary 110101 to decimal  (iii) Decimal 200 to hexadecimal  (iv) Hexadecimal 3F to decimal',
+        modelAnswer:['(i) 45 to binary: 45÷2=22r1, 22÷2=11r0, 11÷2=5r1, 5÷2=2r1, 2÷2=1r0, 1÷2=0r1 → Reading bottom to top: 101101₂','(ii) 110101 to decimal: (1×32)+(1×16)+(0×8)+(1×4)+(0×2)+(1×1) = 32+16+0+4+0+1 = 53₁₀','(iii) 200 to hex: 200÷16=12r8. 12=C in hex. So 200₁₀ = C8₁₆','(iv) 3F to decimal: 3×16 + F(15) = 48+15 = 63₁₀'],
+        hint:'(i) Divide repeatedly by 2, read remainders bottom-up. (ii) Multiply each bit × power of 2. (iii) Divide by 16, use A-F for 10-15. (iv) Multiply by 16.'
+      },
+      { label:'(d)', marks:6, q:'A home security system uses logic gates. The alarm should sound (Output=1) when: it is NIGHT (N=1) AND either the DOOR is open (D=1) OR the WINDOW is open (W=1). Write the Boolean expression and construct the truth table for all combinations where the alarm sounds.',
+        modelAnswer:['Boolean Expression: Alarm = N AND (D OR W)','Truth Table (showing all combinations):', 'N=0: Alarm=0 regardless of D and W (night must be true)','N=1, D=0, W=0: (0 OR 0)=0 → Alarm=0','N=1, D=1, W=0: (1 OR 0)=1 → Alarm=1','N=1, D=0, W=1: (0 OR 1)=1 → Alarm=1','N=1, D=1, W=1: (1 OR 1)=1 → Alarm=1','Circuit: D and W feed into an OR gate. The OR gate output and N feed into an AND gate. AND gate output = Alarm.'],
+        hint:'Expression: N AND (D OR W). For truth table, do all 8 combinations (3 inputs). Circuit needs one OR gate and one AND gate.'
+      }
+    ]
+  },
+  {
+    num:5, marks:20, topic:'Computer Ethics, Legislation & Social Impact',
+    source:'GCE Past Questions', year:'2019–2024',
+    context:`This question examines your understanding of ethical, legal, and social issues arising from the use of computers and information technology.`,
+    parts:[
+      { label:'(a)', marks:4, q:'State the purpose of EACH of the following Acts: (i) The Data Protection Act  (ii) The Computer Misuse Act',
+        modelAnswer:['(i) The Data Protection Act: Protects individuals\' personal data held by organisations. It requires organisations to collect data fairly and for a specified purpose, keep it accurate and secure, and not keep it longer than necessary. Individuals have the right to see their own personal data.','(ii) The Computer Misuse Act: Makes it a criminal offence to (a) access computer material without authorisation, (b) access computer systems with intent to commit further crimes, and (c) intentionally modify computer contents without authorisation (e.g., spreading viruses, deleting files).'],
+        hint:'For each Act: state WHAT it does (protects) and WHO it protects or what it criminalises. Give specific examples.'
+      },
+      { label:'(b)', marks:6, q:'Discuss THREE negative impacts of computers on employment and society.',
+        modelAnswer:['1. Unemployment through automation: Machines and software have replaced many manual and clerical jobs (e.g., factory robots replacing workers, ATMs replacing bank tellers, checkout self-service machines). This causes structural unemployment, especially for low-skilled workers.','2. Privacy invasion: Large amounts of personal data are collected by governments, corporations, and social media platforms without individuals fully understanding how their data is used. This can lead to targeted advertising, surveillance, or data breaches.','3. Cybercrime: Computers have created new forms of crime — identity theft, online fraud, phishing, ransomware attacks — costing businesses and individuals billions of francs annually. Individuals may lose their savings or have their identities stolen.'],
+        hint:'Each point needs: name the impact, explain HOW computers cause it, give a real-world example. 2 marks per point.'
+      },
+      { label:'(c)', marks:4, q:'Describe how computers have POSITIVELY impacted healthcare.',
+        modelAnswer:['1. Medical records and patient management: Electronic Health Records (EHR) allow doctors instant access to a patient\'s complete history, improving diagnosis speed and accuracy.','2. Diagnostic imaging: Technologies like CT scans, MRI, and X-ray imaging use computers to process and display detailed images of the body, enabling detection of diseases that were previously undetectable.','3. Robotic surgery: Computer-controlled robots assist surgeons with greater precision, reducing patient trauma and recovery time.','4. Telemedicine: Patients in remote areas (like rural Cameroon) can receive consultations via video call without travelling long distances.'],
+        hint:'Give 4 specific examples of computer use in healthcare with a brief explanation of each benefit.'
+      },
+      { label:'(d)', marks:6, q:'What is the DIGITAL DIVIDE? Discuss THREE factors that contribute to it and suggest how it can be reduced.',
+        modelAnswer:['Definition: The digital divide is the inequality in access to digital technology (computers, internet, smartphones) between different groups — wealthy vs poor, urban vs rural, developed vs developing countries.','Factors contributing to it:','1. Income/Poverty: Computer equipment and internet connections are expensive. People living in poverty cannot afford devices or data plans.','2. Infrastructure: Rural areas in Cameroon often lack reliable electricity or internet infrastructure (fibre optic cables, phone masts), making digital access impossible.','3. Education/Digital Literacy: Lack of IT education means many adults and children do not know how to use computers effectively, even when access is available.','Ways to reduce it:','- Government investment in rural internet infrastructure (e.g., national broadband programs).','- Subsidised computers and data plans for low-income families.','- Digital literacy programs in schools and communities.'],
+        hint:'Define it (unequal access). Three factors (cost, infrastructure, education). Three solutions (government programs, subsidies, education).'
+      }
+    ]
+  }
+];
+
+// ── RENDER STRUCTURED QUESTIONS ──
+function renderStructured(){
+  document.getElementById('questionList').innerHTML = STRUCTURED_QS.map((q,qi)=>`
+    <div class="q-card" id="qcard${qi}">
+      <div class="q-card-header" onclick="toggleQ(${qi})">
+        <span class="q-num">Question ${q.num}</span>
+        <div class="q-info">
+          <h3>${q.topic}</h3>
+          <div class="meta">${q.source} · Total: ${q.marks} marks</div>
+        </div>
+        <span class="q-toggle" id="qtog${qi}">▼</span>
+      </div>
+      <div class="q-body" id="qbody${qi}">
+        <div class="q-text-block">${q.context}</div>
+        ${q.parts.map((pt,pi)=>`
+          <div class="part-label">${pt.label} <span class="marks-badge">${pt.marks} marks</span></div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:10px;line-height:1.7">${pt.q}</div>
+          <textarea class="answer-box" id="ans_${qi}_${pi}" placeholder="Type your answer here…"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+            <button class="submit-part-btn" onclick="revealModel(${qi},${pi})">📋 Show Model Answer</button>
+            ${isAdmin?`<button class="submit-part-btn" style="background:linear-gradient(135deg,#3498db,#2980b9)" onclick="gradeAnswer(${qi},${pi})">✏️ Grade</button>`:''}
+          </div>
+          <div class="model-answer" id="model_${qi}_${pi}">
+            <h4>✅ Model Answer (${pt.marks} marks)</h4>
+            <ul class="points">${pt.modelAnswer.map(a=>`<li>${a}</li>`).join('')}</ul>
+            <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;font-style:italic">💡 Hint: ${pt.hint}</p>
+          </div>
+          ${isAdmin?`
+          <div class="grader-row" id="graderRow_${qi}_${pi}" style="display:none">
+            <label>Grade (out of ${pt.marks}):</label>
+            <input class="grade-input" type="number" id="grade_${qi}_${pi}" min="0" max="${pt.marks}" placeholder="0">
+            <button class="save-grade-btn" onclick="saveGrade(${qi},${pi},${pt.marks})">Save</button>
+            <span class="grade-saved" id="gsaved_${qi}_${pi}">✅ Saved!</span>
+          </div>`:''}
+        `).join('')}
+        <div class="total-marks" id="totalMarks${qi}">Total earned: – / ${q.marks} marks</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleQ(qi){
+  const body=document.getElementById('qbody'+qi);
+  const tog=document.getElementById('qtog'+qi);
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  tog.classList.toggle('open',!isOpen);
+}
+
+function revealModel(qi,pi){
+  document.getElementById(`model_${qi}_${pi}`).classList.add('show');
+}
+
+function gradeAnswer(qi,pi){
+  document.getElementById(`graderRow_${qi}_${pi}`).style.display='flex';
+}
+
+async function saveGrade(qi,pi,maxMarks){
+  const gradeVal = parseInt(document.getElementById(`grade_${qi}_${pi}`).value)||0;
+  const saved = document.getElementById(`gsaved_${qi}_${pi}`);
+  saved.style.display='inline';
+  setTimeout(()=>saved.style.display='none',2000);
+
+  // Save to server
+  try {
+    await fetch('/api/grade', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ cin: userCIN, name: userName, qIndex: qi, partIndex: pi, grade: gradeVal, maxMarks })
+    });
+  } catch(e) {}
+  // Fallback localStorage
+  localStorage.setItem(`grade_${userCIN}_q${qi}_p${pi}`, gradeVal);
+  updateTotal(qi);
+}
+
+function updateTotal(qi){
+  const q = STRUCTURED_QS[qi];
+  let total=0, possible=0;
+  q.parts.forEach((pt,pi)=>{
+    const g=localStorage.getItem(`grade_${userCIN}_q${qi}_p${pi}`);
+    if(g!==null){ total+=parseInt(g); possible+=pt.marks; }
+  });
+  if(possible>0){
+    document.getElementById(`totalMarks${qi}`).textContent=`Total earned: ${total} / ${q.marks} marks`;
+  }
+}
+
+renderStructured();
+
+// ── ADMIN PANEL ──
+const STUDENTS = {
+  "116285040":"ABIA LORDINHO LEE","116285033":"ACHARA RISA EMAKUN","116285090":"AFUH CARINE NGUM",
+  "116285048":"AJEDMO NAMI SYLVIE INGEE","116285088":"AKWO DAMARIS EMMA","116285076":"ANCHI NADINE ANJA",
+  "116285051":"ANDINE JOSOPHINE BABILA","116285001":"ASONGATABONG MBIANDJI DIEUDONNE EBI",
+  "116285049":"ASSAH RUDOFF KEKUMI","116285046":"AVUMBOM FAVOUR","116285026":"AWAH MIGUEL PRECIOUS WOTOH",
+  "116285056":"AYUK EGBE STACY","116285027":"AZONG ACHAH OCHAL","116285019":"BANDJEM MKWESLEY TONIAN",
+  "116285065":"BERN LEAH NDUM","116285061":"CHEFOR BRIGHTNEY NGONGEH","116285062":"CHEFOR BURNSLEY FO'O-ZO",
+  "116285050":"CHIA RIHANNA MADAH SIH","116285064":"CLAUDINE SHIWOME","116285099":"DAVID AKEM DISONGE",
+  "116285007":"EBANI BLAISE ESOE","116285098":"EBOA STEPHEN BALIKI","116285073":"ELUM FAVOUR OZEN",
+  "116285038":"ESUKWE KERA BOSEMEH","116285020":"FOKOH CLARIS CLEAR","116285085":"GINAH MIKERA AFOR",
+  "116285023":"KUM NELLY-BRIGHT BENG","116285103":"LAROMI CARINE GORROTI","116285079":"LEKEAKA EMMANUELA ATEHNJU",
+  "116285089":"LUM LIZETTE","116285002":"MBAH ASHELY ENGOH","116285066":"MBUBI CLERIJOYCE PANGMEH",
+  "116285013":"MENSEH CHEALSE NAMON","116285036":"MOKOLI PENIEL NYAMA","116285052":"NAMINA GLORY MALIKE",
+  "116285008":"NDITAH ALEXIM TAMENJOH","116285022":"NDO VANESSA ONYA","116285075":"NEWEH TREVORE NGELON",
+  "116285015":"NGOMBA SALOME","116285016":"NGUFOR BERLINE FLORE TAMETA","116285035":"NGULEFAC DAVID ATEAWUNG",
+  "116285009":"NGWA PASCAL NJENJI","116285068":"NGWESSE ROWLLINGS DIABE","116285031":"NKWENYI VICTORY NSANNEH",
+  "116285094":"NOTO CHRISTIANA NYAMA","116285014":"NTOUBE SIANA MAROLE","116285010":"NYAME FAVOUR DIONE",
+  "116285012":"PEWAKE GODWILL WOPENASE","116285072":"ROBERT BETOTO MUDIKA","116285032":"SAMA ALCASIM FIAGMENYI",
+  "116285058":"TAMPA DANIEL TABU","116285110":"VICTOR-BLOSSOM MAKAINLY","116285000":"VELUYEN"
+};
+
+async function renderAdmin(){
+  if(!isAdmin) return;
+  
+  document.getElementById('adminStats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:rgba(255,255,255,0.4)">⏳ Loading from server...</div>';
+
+  let serverData = null;
+  try {
+    const resp = await fetch('/api/admin', { headers: {'x-admin-token':'ADMIN2026'} });
+    serverData = await resp.json();
+  } catch(e) { console.log('Server offline, using localStorage'); }
+
+  const sessions = serverData ? serverData.sessions : JSON.parse(localStorage.getItem('accessLogs')||'[]');
+  const quizResults = serverData ? serverData.quizResults : JSON.parse(localStorage.getItem('quizResults')||'[]');
+  const dLogs = JSON.parse(localStorage.getItem('durationLogs')||'[]');
+  const totals = serverData ? serverData.totals : { totalSessions:sessions.length, uniqueStudents:[...new Set(sessions.map(s=>s.cin))].length, quizzesTaken:quizResults.length, avgDuration:0 };
+  const studentSummary = serverData ? serverData.studentSummary : [];
+
+  document.getElementById('adminStats').innerHTML = `
+    <div class="admin-stat"><div class="an">${totals.uniqueStudents}</div><div class="al">Students Seen</div></div>
+    <div class="admin-stat"><div class="an">${totals.totalSessions}</div><div class="al">Total Logins</div></div>
+    <div class="admin-stat"><div class="an">${Math.floor(totals.avgDuration/60)}m${totals.avgDuration%60}s</div><div class="al">Avg Session</div></div>
+    <div class="admin-stat"><div class="an">${totals.quizzesTaken}</div><div class="al">Quizzes</div></div>
+    <div class="admin-stat"><div class="an">${quizResults.filter(r=>r.score>=50).length}</div><div class="al">Passes</div></div>
+    <div class="admin-stat"><div class="an" style="font-size:12px">Mr Ngwana<br>Joshua</div><div class="al">Teacher</div></div>
+  `;
+
+  // Login table
+  const logBodyHTML = sessions.length===0
+    ? '<tr><td colspan="8" class="empty-msg">No sessions yet — students must log in to appear here.</td></tr>'
+    : sessions.slice(0,80).map((s,i)=>{
+        const dur = s.duration ? Math.floor(s.duration/60)+'m '+(s.duration%60)+'s' : '<em style="color:rgba(255,255,255,0.3)">Active</em>';
+        const loc = s.location ? `<a href="https://maps.google.com/?q=${s.location}" target="_blank" style="color:#58a6ff;font-size:11px">📍 Map</a>` : '–';
+        const dev = s.deviceLabel || (s.deviceType==='mobile'?'📱 Phone':s.deviceType==='tablet'?'📲 Tablet':'💻 Computer');
+        const dt = new Date(s.loginTime||s.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+        return `<tr>
+          <td>${i+1}</td><td style="font-family:monospace;font-size:11px;color:var(--gold)">${s.cin}</td>
+          <td style="font-weight:600">${s.name}</td>
+          <td style="font-size:11px">${dt}</td>
+          <td>${dur}</td>
+          <td style="font-size:11px">${dev}</td>
+          <td style="font-size:11px;color:rgba(255,255,255,0.6)">${s.browser||s.os||'–'}</td>
+          <td>${loc}</td>
+        </tr>`;
+      }).join('');
+
+  document.getElementById('logBody').innerHTML = logBodyHTML;
+
+  // Update log table headers to include device/location
+  const logTable = document.querySelector('#logBody').closest('table');
+  if(logTable){
+    logTable.querySelector('thead tr').innerHTML = '<th>#</th><th>CIN</th><th>Name</th><th>Login Time</th><th>Duration</th><th>Device</th><th>Browser/OS</th><th>Location</th>';
+  }
+
+  // Quiz results table
+  document.getElementById('quizBody').innerHTML = quizResults.length===0
+    ? '<tr><td colspan="6" class="empty-msg">No quiz results yet.</td></tr>'
+    : quizResults.slice(0,80).map(r=>`
+        <tr>
+          <td style="font-family:monospace;font-size:11px;color:var(--gold)">${r.cin}</td>
+          <td style="font-weight:600">${r.name}</td>
+          <td style="font-size:11px">${r.topic}</td>
+          <td><span class="${r.score>=50?'pass-badge':'fail-badge'}">${r.score}%</span></td>
+          <td>${r.correct||'–'}/${r.total||'–'}</td>
+          <td style="font-size:11px">${new Date(r.date).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+        </tr>`).join('');
+
+  // Student summary table
+  // Always show all 52 students — merge server data with full class list
+  const FULL_CLASS_P4 = [
+    {cin:"116285040",name:"ABIA LORDINHO LEE"},{cin:"116285033",name:"ACHARA RISA EMAKUN"},
+    {cin:"116285090",name:"AFUH CARINE NGUM"},{cin:"116285048",name:"AJEDMO NAMI SYLVIE INGEE"},
+    {cin:"116285088",name:"AKWO DAMARIS EMMA"},{cin:"116285076",name:"ANCHI NADINE ANJA"},
+    {cin:"116285051",name:"ANDINE JOSOPHINE BABILA"},{cin:"116285001",name:"ASONGATABONG MBIANDJI DIEUDONNE EBI"},
+    {cin:"116285049",name:"ASSAH RUDOFF KEKUMI"},{cin:"116285046",name:"AVUMBOM FAVOUR"},
+    {cin:"116285026",name:"AWAH MIGUEL PRECIOUS WOTOH"},{cin:"116285056",name:"AYUK EGBE STACY"},
+    {cin:"116285027",name:"AZONG ACHAH OCHAL"},{cin:"116285019",name:"BANDJEM MKWESLEY TONIAN"},
+    {cin:"116285065",name:"BERN LEAH NDUM"},{cin:"116285061",name:"CHEFOR BRIGHTNEY NGONGEH"},
+    {cin:"116285062",name:"CHEFOR BURNSLEY FO'O-ZO"},{cin:"116285050",name:"CHIA RIHANNA MADAH SIH"},
+    {cin:"116285064",name:"CLAUDINE SHIWOME"},{cin:"116285099",name:"DAVID AKEM DISONGE"},
+    {cin:"116285007",name:"EBANI BLAISE ESOE"},{cin:"116285098",name:"EBOA STEPHEN BALIKI"},
+    {cin:"116285073",name:"ELUM FAVOUR OZEN"},{cin:"116285038",name:"ESUKWE KERA BOSEMEH"},
+    {cin:"116285020",name:"FOKOH CLARIS CLEAR"},{cin:"116285085",name:"GINAH MIKERA AFOR"},
+    {cin:"116285023",name:"KUM NELLY-BRIGHT BENG"},{cin:"116285103",name:"LAROMI CARINE GORROTI"},
+    {cin:"116285079",name:"LEKEAKA EMMANUELA ATEHNJU"},{cin:"116285089",name:"LUM LIZETTE"},
+    {cin:"116285002",name:"MBAH ASHELY ENGOH"},{cin:"116285066",name:"MBUBI CLERIJOYCE PANGMEH"},
+    {cin:"116285013",name:"MENSEH CHEALSE NAMON"},{cin:"116285036",name:"MOKOLI PENIEL NYAMA"},
+    {cin:"116285052",name:"NAMINA GLORY MALIKE"},{cin:"116285008",name:"NDITAH ALEXIM TAMENJOH"},
+    {cin:"116285022",name:"NDO VANESSA ONYA"},{cin:"116285075",name:"NEWEH TREVORE NGELON"},
+    {cin:"116285015",name:"NGOMBA SALOME"},{cin:"116285016",name:"NGUFOR BERLINE FLORE TAMETA"},
+    {cin:"116285035",name:"NGULEFAC DAVID ATEAWUNG"},{cin:"116285009",name:"NGWA PASCAL NJENJI"},
+    {cin:"116285068",name:"NGWESSE ROWLLINGS DIABE"},{cin:"116285031",name:"NKWENYI VICTORY NSANNEH"},
+    {cin:"116285094",name:"NOTO CHRISTIANA NYAMA"},{cin:"116285014",name:"NTOUBE SIANA MAROLE"},
+    {cin:"116285010",name:"NYAME FAVOUR DIONE"},{cin:"116285012",name:"PEWAKE GODWILL WOPENASE"},
+    {cin:"116285072",name:"ROBERT BETOTO MUDIKA"},{cin:"116285032",name:"SAMA ALCASIM FIAGMENYI"},
+    {cin:"116285058",name:"TAMPA DANIEL TABU"},{cin:"116285110",name:"VICTOR-BLOSSOM MAKAINLY"},
+    {cin:"116285000",name:"VELUYEN"}
+  ];
+
+  // Build lookup from server summary
+  const sumLookup = {};
+  (studentSummary||[]).forEach(s=>{ sumLookup[s.cin]=s; });
+
+  // Legend
+  let summaryHTML = `
+    <div class="admin-table-wrap" style="margin-top:16px">
+      <h3>👥 All 52 Students — Form 5 CS (Mr Ngwana Joshua)</h3>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;padding:10px 16px;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <span style="color:#2ecc71">🟢 Active — logged in + quizzes done</span>
+        <span style="color:#f0c040">🟡 Logged in — no quizzes yet</span>
+        <span style="color:rgba(255,255,255,0.35)">⚪ Never logged in</span>
+      </div>
+      <div class="tbl-wrap"><table class="atbl">
+        <thead><tr>
+          <th>#</th><th>Name</th><th>CIN</th><th>Status</th>
+          <th>Logins</th><th>Last Seen</th><th>Total Time</th>
+          <th>Quiz Avg</th><th>Quizzes</th><th>Device(s)</th>
+        </tr></thead>
+        <tbody>`;
+
+  FULL_CLASS_P4.forEach((student, i) => {
+    const d = sumLookup[student.cin] || { logins:0, totalDuration:0, quizAvg:null, quizCount:0, devices:[], lastSeen:null };
+    const active = d.logins > 0;
+    const hasQuiz = d.quizCount > 0;
+    let badge, rowOp;
+    if(active && hasQuiz){
+      badge='<span style="background:rgba(46,204,113,0.15);color:#2ecc71;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700">🟢 Active</span>';
+      rowOp='';
+    } else if(active){
+      badge='<span style="background:rgba(240,192,64,0.12);color:#f0c040;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700">🟡 Logged In</span>';
+      rowOp='';
+    } else {
+      badge='<span style="background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.3);padding:3px 10px;border-radius:10px;font-size:11px">⚪ Never</span>';
+      rowOp='opacity:0.5;';
+    }
+    const lastSeen = d.lastSeen
+      ? new Date(d.lastSeen).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+    const totalTime = d.totalDuration
+      ? Math.floor(d.totalDuration/60)+'m '+(d.totalDuration%60)+'s'
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+    const quizAvgHtml = d.quizAvg!==null
+      ? `<span style="color:${d.quizAvg>=50?'#2ecc71':'#e74c3c'};font-weight:700">${d.quizAvg}%</span>`
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+    const devs = (d.devices||[]).join(', ') || '<span style="color:rgba(255,255,255,0.2)">–</span>';
+
+    summaryHTML += `<tr style="${rowOp}">
+      <td style="color:rgba(255,255,255,0.4)">${i+1}</td>
+      <td style="font-weight:600;color:#f0f6fc">${student.name}</td>
+      <td style="font-family:monospace;font-size:11px;color:var(--gold)">${student.cin}</td>
+      <td>${badge}</td>
+      <td style="text-align:center;font-weight:700;color:${active?'#f0f6fc':'rgba(255,255,255,0.3)'}">${d.logins}</td>
+      <td style="font-size:11px">${lastSeen}</td>
+      <td style="font-size:11px">${totalTime}</td>
+      <td>${quizAvgHtml}</td>
+      <td style="text-align:center;color:${hasQuiz?'#f0f6fc':'rgba(255,255,255,0.3)'}">${d.quizCount||0}</td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.65)">${devs}</td>
+    </tr>`;
+  });
+
+  summaryHTML += '</tbody></table></div></div>';
+  document.querySelector('.admin-actions').insertAdjacentHTML('beforebegin', summaryHTML);
+  }
+}
+function showStudentDetail(cin){
+  const name = STUDENTS[cin];
+  const logs = JSON.parse(localStorage.getItem('accessLogs')||'[]').filter(l=>l.cin===cin);
+  const durs = JSON.parse(localStorage.getItem('durationLogs')||'[]').filter(d=>d.cin===cin);
+  const qrs = JSON.parse(localStorage.getItem('quizResults')||'[]').filter(r=>r.cin===cin);
+  const totalDur = durs.reduce((s,d)=>s+d.duration,0);
+  const avg = qrs.length ? Math.round(qrs.reduce((s,r)=>s+r.score,0)/qrs.length) : null;
+  const sd = document.getElementById('studentDetail');
+  sd.className='student-detail show';
+  sd.innerHTML=`
+    <div class="sd-name">${name}</div>
+    <div class="sd-cin">CIN: ${cin}</div>
+    <div class="sd-grid">
+      <div class="sd-item"><div class="v">${logs.length}</div><div class="l">Logins</div></div>
+      <div class="sd-item"><div class="v">${Math.floor(totalDur/60)}m</div><div class="l">Total Time</div></div>
+      <div class="sd-item"><div class="v">${qrs.length}</div><div class="l">Quizzes</div></div>
+      <div class="sd-item"><div class="v">${avg!==null?avg+'%':'–'}</div><div class="l">Quiz Avg</div></div>
+    </div>
+    ${qrs.length?`<div style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.6)">
+      <strong style="color:var(--gold)">Quiz History:</strong><br>
+      ${qrs.map(r=>`<span style="margin-right:12px">${r.topic}: <span style="color:${r.score>=50?'#2ecc71':'#e74c3c'}">${r.score}%</span></span>`).join('')}
+    </div>`:''}
+  `;
+  sd.scrollIntoView({behavior:'smooth'});
+}
+
+function searchStudents(){
+  const q=document.getElementById('studentSearch').value.toLowerCase();
+  document.querySelectorAll('#studentBody tr').forEach(row=>{
+    row.style.display=(row.textContent.toLowerCase().includes(q))?'':'none';
+  });
+}
+
+async function clearServer(type){
+  if(!confirm('Clear '+type+' data permanently? Cannot be undone.')) return;
+  try{
+    await fetch('/api/admin/clear',{
+      method:'DELETE', headers:{'Content-Type':'application/json','x-admin-token':'ADMIN2026'},
+      body:JSON.stringify({type})
+    });
+    renderAdmin();
+  }catch(e){ alert('Error: '+e.message); }
+}
+</script>
+</body>
+</html>

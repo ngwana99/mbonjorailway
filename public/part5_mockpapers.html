@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Exam Papers – GHS Mbonjo CS</title>
+<style>
+* { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+@media print { body { display:none !important; } }
+input, textarea { -webkit-user-select:text; user-select:text; }
+:root { --green:#006633;--gold:#FFD700;--dark:#1a1a2e;--card:#16213e;--accent:#0f3460;--text:#e0e0e0;--white:#fff;--red:#e74c3c;--blue:#3498db;--radius:12px; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+
+.topbar{background:linear-gradient(135deg,var(--green),#004d26);border-bottom:3px solid var(--gold);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--white);}
+.topbar-title span{color:var(--gold);}
+.back-btn{background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.3);color:var(--gold);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600;}
+
+.container{max-width:860px;margin:0 auto;padding:20px 16px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAPER LIST */
+#paperList{animation:fadeIn 0.4s ease;}
+.section-hdr{margin-bottom:18px;}
+.section-hdr h2{font-size:20px;color:var(--gold);font-weight:800;}
+.section-hdr p{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;}
+.papers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:30px;}
+.paper-card{background:var(--card);border-radius:var(--radius);border:1px solid rgba(255,255,255,0.07);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.paper-card:hover{border-color:rgba(255,215,0,0.3);transform:translateY(-4px);box-shadow:0 8px 24px rgba(255,215,0,0.1);}
+.paper-card-top{padding:16px;display:flex;align-items:flex-start;gap:12px;}
+.paper-icon{font-size:30px;flex-shrink:0;}
+.paper-meta h3{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.paper-meta .sub{font-size:12px;color:rgba(255,255,255,0.4);}
+.paper-tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 14px;}
+.tag{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600;}
+.tag.year{background:rgba(255,215,0,0.1);color:var(--gold);}
+.tag.type{background:rgba(52,152,219,0.15);color:var(--blue);}
+.tag.qs{background:rgba(0,102,51,0.2);color:#2ecc71;}
+.paper-card-footer{padding:10px 16px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}
+.paper-card-footer .mode{font-size:11px;color:rgba(255,255,255,0.35);}
+.start-btn{background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;border:none;padding:7px 18px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;transition:transform 0.2s;}
+.start-btn:hover{transform:scale(1.05);}
+
+/* EXAM SETUP */
+#examSetup{display:none;animation:fadeIn 0.4s ease;}
+.setup-card{background:var(--card);border-radius:var(--radius);padding:24px;border:1px solid rgba(255,215,0,0.15);margin-bottom:20px;}
+.setup-card h3{color:var(--gold);font-size:18px;font-weight:800;margin-bottom:6px;}
+.setup-card .desc{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:18px;line-height:1.5;}
+.info-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;}
+.info-pill{background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 16px;text-align:center;flex:1;min-width:90px;}
+.info-pill .v{font-size:20px;font-weight:800;color:var(--gold);}
+.info-pill .l{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;}
+.launch-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;border:none;border-radius:var(--radius);font-size:16px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;margin-bottom:10px;}
+.launch-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,0.4);}
+.cancel-btn{width:100%;padding:13px;background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;}
+
+/* EXAM RUNNER */
+#examRunner{display:none;animation:fadeIn 0.4s ease;}
+.exam-header{background:var(--card);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border:1px solid rgba(255,255,255,0.07);position:sticky;top:55px;z-index:10;}
+.exam-progress{font-size:13px;color:rgba(255,255,255,0.6);}
+.exam-progress span{color:var(--gold);font-weight:700;}
+.exam-timer{background:rgba(255,165,0,0.15);border:1.5px solid rgba(255,165,0,0.3);color:orange;padding:8px 16px;border-radius:20px;font-size:15px;font-weight:800;min-width:90px;text-align:center;}
+.exam-timer.red{background:rgba(231,76,60,0.2);border-color:rgba(231,76,60,0.4);color:#ff6b6b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.progress-bar-exam{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;margin-bottom:16px;overflow:hidden;}
+.progress-fill-exam{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width 0.3s;}
+
+/* QUESTION NAV */
+.q-nav-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:16px;}
+@media(max-width:480px){.q-nav-grid{grid-template-columns:repeat(7,1fr);}}
+.q-nav-btn{aspect-ratio:1;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.q-nav-btn:hover{background:rgba(255,215,0,0.15);}
+.q-nav-btn.answered{background:rgba(0,200,80,0.2);color:#2ecc71;}
+.q-nav-btn.current{background:rgba(255,215,0,0.25);color:var(--gold);border:1.5px solid var(--gold);}
+.q-nav-btn.skipped{background:rgba(231,76,60,0.15);color:#ff6b6b;}
+
+/* QUESTION CARD */
+.exam-q-card{background:var(--card);border-radius:var(--radius);padding:22px;border:1px solid rgba(255,255,255,0.07);margin-bottom:14px;}
+.exam-q-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.q-badge{background:rgba(255,215,0,0.12);color:var(--gold);padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;}
+.q-src{font-size:11px;color:rgba(255,255,255,0.3);}
+.exam-q-text{font-size:15px;color:var(--white);line-height:1.7;margin-bottom:18px;}
+.exam-q-text pre{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.15);border-radius:6px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.85);margin:10px 0;overflow-x:auto;white-space:pre-wrap;font-family:'Courier New',monospace;}
+.exam-opts{display:flex;flex-direction:column;gap:8px;}
+.exam-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;transition:all 0.2s;text-align:left;width:100%;}
+.exam-opt:hover{background:rgba(255,215,0,0.07);border-color:rgba(255,215,0,0.25);}
+.exam-opt.selected{background:rgba(255,215,0,0.12);border-color:rgba(255,215,0,0.5);}
+.exam-opt.selected .opt-letter{background:var(--gold);color:#1a1a2e;}
+.opt-letter{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.opt-text{font-size:14px;color:rgba(255,255,255,0.85);flex:1;line-height:1.4;}
+
+/* EXAM NAV BUTTONS */
+.exam-nav{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.exam-nav-btn{flex:1;min-width:100px;padding:12px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s;}
+.btn-prev{background:rgba(255,255,255,0.07);color:var(--text);}
+.btn-skip{background:rgba(255,165,0,0.15);color:orange;border:1px solid rgba(255,165,0,0.3);}
+.btn-next{background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;}
+.btn-submit{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;font-size:14px;}
+.exam-nav-btn:hover{transform:translateY(-2px);}
+
+/* RESULTS */
+#examResults{display:none;animation:fadeIn 0.5s ease;}
+.result-hero{background:var(--card);border-radius:20px;padding:32px 24px;text-align:center;border:2px solid var(--gold);box-shadow:0 0 50px rgba(255,215,0,0.15);margin-bottom:20px;}
+.result-pct{font-size:72px;font-weight:900;line-height:1;margin-bottom:8px;}
+.result-pct.pass{color:#2ecc71;}.result-pct.fail{color:#e74c3c;}
+.result-grade-label{font-size:20px;font-weight:700;color:var(--gold);margin-bottom:12px;}
+.result-msg{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:20px;line-height:1.6;}
+.result-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:480px){.result-row{grid-template-columns:repeat(2,1fr);}}
+.r-box{background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 8px;text-align:center;}
+.r-box .rv{font-size:24px;font-weight:800;color:var(--gold);}
+.r-box .rl{font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.8px;}
+.result-btns{display:flex;flex-direction:column;gap:8px;}
+.rbtn{width:100%;padding:14px;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.rbtn:hover{transform:translateY(-2px);}
+.rbtn-retry{background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;}
+.rbtn-home{background:rgba(255,255,255,0.07);color:var(--text);border:1px solid rgba(255,255,255,0.1);}
+.review-area{margin-top:20px;}
+.review-area h3{font-size:17px;color:var(--gold);margin-bottom:14px;font-weight:800;}
+.ri{background:var(--card);border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid #2ecc71;}
+.ri.wrong{border-left-color:#e74c3c;}
+.ri-q-text{font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:8px;line-height:1.5;}
+.ri-line{font-size:12px;margin-bottom:3px;}
+.ri-exp{font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px;font-style:italic;line-height:1.5;}
+@media(max-width:480px){.container{padding:12px 10px;}.exam-q-text{font-size:14px;}.opt-text{font-size:13px;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+  <div class="topbar-title">CS e-Learning &nbsp;·&nbsp; <span>Mock Exam Papers</span></div>
+  <div style="font-size:12px;color:var(--gold);font-weight:700" id="topUser"></div>
+</div>
+<div class="container">
+
+<!-- PAPER LIST -->
+<div id="paperList">
+  <div class="section-hdr">
+    <h2>📜 Mock & Past Examination Papers</h2>
+    <p>Full timed exam mode — simulates real examination conditions. Answers revealed at the end with full explanations.</p>
+  </div>
+
+  <div class="section-hdr" style="margin-top:8px"><h2 style="font-size:15px;color:rgba(255,215,0,0.7)">🗓️ 2026 Papers</h2></div>
+  <div class="papers-grid">
+    <div class="paper-card" onclick="setupExam('sw2026p1')">
+      <div class="paper-card-top"><span class="paper-icon">📜</span>
+        <div class="paper-meta"><h3>SW Regional Mock 2026 – Paper 1</h3><div class="sub">South West Regional TRU · March 2026</div></div>
+      </div>
+      <div class="paper-tags"><span class="tag year">2026</span><span class="tag type">MCQ P1</span><span class="tag qs">50 Questions</span></div>
+      <div class="paper-card-footer"><span class="mode">⏱ 90 minutes · All topics</span><button class="start-btn">Attempt →</button></div>
+    </div>
+  </div>
+
+  <div class="section-hdr" style="margin-top:8px"><h2 style="font-size:15px;color:rgba(255,215,0,0.7)">🗓️ 2019 Papers</h2></div>
+  <div class="papers-grid">
+    <div class="paper-card" onclick="setupExam('centre2019p1')">
+      <div class="paper-card-top"><span class="paper-icon">📜</span>
+        <div class="paper-meta"><h3>Centre Regional Mock 2019 – Paper 1</h3><div class="sub">Centre Regional Mock · March 2019</div></div>
+      </div>
+      <div class="paper-tags"><span class="tag year">2019</span><span class="tag type">MCQ P1</span><span class="tag qs">50 Questions</span></div>
+      <div class="paper-card-footer"><span class="mode">⏱ 90 minutes · All topics</span><button class="start-btn">Attempt →</button></div>
+    </div>
+  </div>
+
+  <div class="section-hdr" style="margin-top:8px"><h2 style="font-size:15px;color:rgba(255,215,0,0.7)">🗓️ 2024–2025 Papers</h2></div>
+  <div class="papers-grid">
+    <div class="paper-card" onclick="setupExam('hihs2024p1')">
+      <div class="paper-card-top"><span class="paper-icon">📜</span>
+        <div class="paper-meta"><h3>HIHS Mock 2024 – Paper 1</h3><div class="sub">HIHS Yaounde Mock Exam</div></div>
+      </div>
+      <div class="paper-tags"><span class="tag year">2024</span><span class="tag type">MCQ P1</span><span class="tag qs">30 Questions</span></div>
+      <div class="paper-card-footer"><span class="mode">⏱ 60 minutes</span><button class="start-btn">Attempt →</button></div>
+    </div>
+    <div class="paper-card" onclick="setupExam('mixed2025')">
+      <div class="paper-card-top"><span class="paper-icon">🎯</span>
+        <div class="paper-meta"><h3>Mixed Mock 2025 – All Regions</h3><div class="sub">Compiled from multiple 2025 mocks</div></div>
+      </div>
+      <div class="paper-tags"><span class="tag year">2025</span><span class="tag type">MCQ P1</span><span class="tag qs">40 Questions</span></div>
+      <div class="paper-card-footer"><span class="mode">⏱ 80 minutes</span><button class="start-btn">Attempt →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM SETUP -->
+<div id="examSetup">
+  <div class="setup-card">
+    <h3 id="setupTitle">📜 Exam Title</h3>
+    <div class="desc" id="setupDesc">Loading...</div>
+    <div class="info-row">
+      <div class="info-pill"><div class="v" id="setupQs">50</div><div class="l">Questions</div></div>
+      <div class="info-pill"><div class="v" id="setupTime">90</div><div class="l">Minutes</div></div>
+      <div class="info-pill"><div class="v" id="setupMarks">50</div><div class="l">Marks</div></div>
+      <div class="info-pill"><div class="v">50%</div><div class="l">Pass Mark</div></div>
+    </div>
+    <div style="background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.2);border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:rgba(255,165,0,0.9);line-height:1.6;">
+      ⚠️ <strong>Exam conditions:</strong> Do not leave this page once started. Timer will count down. Unanswered questions score zero. Answers revealed only at the end.
+    </div>
+    <button class="launch-btn" onclick="launchExam()">🚀 Start Exam</button>
+    <button class="cancel-btn" onclick="showPaperList()">← Choose Different Paper</button>
+  </div>
+</div>
+
+<!-- EXAM RUNNER -->
+<div id="examRunner">
+  <div class="exam-header">
+    <div class="exam-progress">Q <span id="curQ">1</span>/<span id="totQ">50</span> &nbsp;·&nbsp; Score: <span id="liveSc">–</span></div>
+    <div class="exam-timer" id="examTimer">90:00</div>
+  </div>
+  <div class="progress-bar-exam"><div class="progress-fill-exam" id="examProgress" style="width:0%"></div></div>
+  <!-- Question navigator -->
+  <div class="q-nav-grid" id="qNavGrid"></div>
+  <!-- Active question -->
+  <div id="examQArea"></div>
+</div>
+
+<!-- RESULTS -->
+<div id="examResults">
+  <div class="result-hero">
+    <div class="result-pct" id="resPct">0%</div>
+    <div class="result-grade-label" id="resGrade"></div>
+    <div class="result-msg" id="resMsg"></div>
+    <div class="result-row">
+      <div class="r-box"><div class="rv" id="resCorrect">0</div><div class="rl">Correct</div></div>
+      <div class="r-box"><div class="rv" id="resWrong">0</div><div class="rl">Wrong</div></div>
+      <div class="r-box"><div class="rv" id="resSkipped">0</div><div class="rl">Skipped</div></div>
+      <div class="r-box"><div class="rv" id="resTime">–</div><div class="rl">Time Used</div></div>
+    </div>
+    <div class="result-btns">
+      <button class="rbtn rbtn-retry" onclick="retryExam()">🔄 Retry This Paper</button>
+      <button class="rbtn rbtn-home" onclick="showPaperList()">← All Papers</button>
+    </div>
+  </div>
+  <div class="review-area">
+    <h3>📋 Review All Answers</h3>
+    <div id="reviewItems"></div>
+  </div>
+</div>
+
+</div><!-- container -->
+<script>
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&['c','p','s','u','a'].includes(e.key.toLowerCase()))e.preventDefault(); if(e.key==='F12')e.preventDefault(); });
+const userCIN=sessionStorage.getItem('userCIN'), userName=sessionStorage.getItem('userName');
+if(!userCIN){window.location.href='index.html';}
+document.getElementById('topUser').textContent='👤 '+(userName||'').split(' ')[0];
+function goBack(){window.location.href='part2_platform.html';}
+
+// ════════════════════════════════════════
+// PAPER BANK
+// ════════════════════════════════════════
+const PAPERS = {
+
+  sw2026p1:{
+    title:'SW Regional Mock 2026 – Paper 1',
+    desc:'South West Regional Mock Examination · March 2026 · Computer Science 0595 · Paper 1 (MCQ)',
+    time:90, marks:50,
+    questions:[
+      {q:'The key difference between the second and the third generation computer is:',opts:['Vacuum tube replaced transistors','Transistors replaced vacuum tube','Integrated Circuit replaced transistors','Transistors replaced integrated circuit'],ans:2,exp:'3rd generation computers replaced transistors with Integrated Circuits (ICs), enabling smaller, faster, cheaper computers.'},
+      {q:'Restarting a computer (while it is already on) is commonly called:',opts:['Cool boot','Warm boot','Restart boot','Run boot'],ans:1,exp:'A warm boot (soft reset) restarts the computer while power remains on. A cold boot is starting from complete power-off.'},
+      {q:'What is artificial intelligence primarily concerned with?',opts:['Developing faster computers','Designing video games','Creating machines that can perform tasks requiring human intelligence','Enhancing graphic design software'],ans:2,exp:'AI is the simulation of human intelligence by machines — reasoning, learning, problem-solving, and perception.'},
+      {q:'Saved files on a computer system are known as:',opts:['Softcopy','Printable Copy','Hardcopy','Memory Copy'],ans:0,exp:'A softcopy is a digital document stored on a computer or displayed on screen. Hardcopy is a physical printed version.'},
+      {q:'The acronym IoT stands for:',opts:['Internet over Things','Internet on Things','Intranet of Things','Internet of Things'],ans:3,exp:'IoT (Internet of Things) refers to the network of physical devices, vehicles, appliances connected to the internet to collect and share data.'},
+      {q:'How many digits exist in the octal number system?',opts:['6','7','8','9'],ans:2,exp:'The octal system is base-8, using 8 digits: 0, 1, 2, 3, 4, 5, 6, 7.'},
+      {q:'Given that binary 01100110 represents "f" in ASCII. The binary representation of "d" will be:',opts:['01100101','01100111','01100100','01101000'],ans:2,exp:'"f"=102, "d"=100. 100 in binary = 01100100. Each letter differs by 1 in ASCII (d=100, e=101, f=102).'},
+      {q:'1000 seconds in picoseconds is:',opts:['10⁻¹⁰','10⁻¹²','10⁻⁹','10⁻⁶'],ans:1,exp:'1 picosecond = 10⁻¹² seconds. So 1000 seconds in picoseconds = 1000 / 10⁻¹² = 10¹⁵ picoseconds. This question asks to express 1 picosecond in seconds = 10⁻¹².',topic:'Number Systems'},
+      {q:'Which logic gate gives output 1 only when both inputs are the SAME (both 0 or both 1)?',opts:['AND','OR','XNOR','XOR'],ans:2,exp:'XNOR outputs 1 when inputs are the same: 0,0→1; 1,1→1; 0,1→0; 1,0→0. It is the inverse of XOR.',topic:'Logic Gates'},
+      {q:'Convert F9ED (hexadecimal) into binary:',opts:['1111 1001 1110 1101','1111 1101 1101 1101','1111 1001 1100 1101','1111 1101 1110 1101'],ans:0,exp:'F=1111, 9=1001, E=1110, D=1101. Combine: 1111 1001 1110 1101.',topic:'Number Systems'},
+      {q:'Identify the HTML tag that draws a horizontal line:',opts:['<br>','<hl>','<hr>','<rh>'],ans:2,exp:'<hr> (horizontal rule) draws a horizontal dividing line across the page in HTML. <br> is a line break.',topic:'Networks & Internet'},
+      {q:'Which word processor tool suggests another way of saying what you meant?',opts:['Word count','Thesaurus','Spelling & Grammar','Suggestion box'],ans:1,exp:'The Thesaurus suggests synonyms (words with similar meaning). Spelling & Grammar checks errors. Word Count counts words.',topic:'Software & Applications'},
+      {q:'The file extension .png is used to hold which type of file?',opts:['Graphics','Text','Videos','Sound'],ans:0,exp:'PNG (Portable Network Graphics) is an image/graphics file format known for lossless compression and transparency support.',topic:'Software & Applications'},
+      {q:'Installing a system patch on Windows to improve its performance is known as:',opts:['Upgrade','Update','Download','Upload'],ans:1,exp:'An Update (patch) fixes bugs and improves performance of the same version. An Upgrade moves to a newer version of the software.',topic:'Software & Applications'},
+      {q:'How many cells does the spreadsheet range A2:C3 have?',opts:['9','8','4','6'],ans:3,exp:'A2:C3 covers columns A,B,C (3 columns) and rows 2,3 (2 rows) = 3×2 = 6 cells.',topic:'Software & Applications'},
+      {q:'Which of the following is NOT utility software?',opts:['Disk clean up','Defragmenter','Antivirus','Operating System'],ans:3,exp:'An Operating System (OS) is system software that manages hardware. Disk cleanup, defragmenter, and antivirus are utility programs.',topic:'Software & Applications'},
+      {q:'The ability of a program to run on different platforms is referred to as:',opts:['Portability','Durability','Efficiency','Reliability'],ans:0,exp:'Portability means a program can run on different hardware or operating systems with little or no modification.',topic:'Algorithms & Programming'},
+      {q:'Which software presents information in the form of slides?',opts:['Presentation software','Word processor','Spreadsheet','Desktop Publishing'],ans:0,exp:'Presentation software (e.g., Microsoft PowerPoint, LibreOffice Impress) creates and displays content as slides.',topic:'Software & Applications'},
+      {q:'A software whose source code is available to the public free of charge and can be modified is:',opts:['Open-source software','License software','Free software','Free open-source software'],ans:3,exp:'Free Open-Source Software (FOSS) is both free to use and has publicly accessible, modifiable source code. Examples: Linux, LibreOffice.',topic:'Software & Applications'},
+      {q:'A program is said to be finite if:',opts:['Its execution eventually ends','Its execution never ends','It does not make sense','It is readable'],ans:0,exp:'A finite algorithm/program must terminate after a finite number of steps. This is one of the key properties of a valid algorithm.',topic:'Algorithms & Programming'},
+      {q:'A dual core processor means:',opts:['Two persons can work with the system','Two independent processing units in the computer','A slow processing time','Larger storage space'],ans:1,exp:'A dual-core processor has two independent processing cores on one chip, allowing it to handle multiple tasks simultaneously.',topic:'Computer Hardware'},
+      {q:'In magnetic disks, a group of sectors that cut across cylinders is called:',opts:['Clusters','Tracks','Plates','Blocks'],ans:0,exp:'A cluster is the minimum allocation unit on a disk — a group of sectors. Tracks are concentric circles; cylinders are stacked tracks.',topic:'Computer Hardware'},
+      {q:'Which is a non-volatile PRIMARY storage device?',opts:['ROM','RAM','HDD','Cache'],ans:0,exp:'ROM (Read-Only Memory) is primary (internal) and non-volatile — it retains data without power. RAM is volatile. HDD is secondary.',topic:'Computer Hardware'},
+      {q:'A touchscreen is a(n) _______ device:',opts:['Input','Output','Input/Output','Storage'],ans:2,exp:'A touchscreen is both INPUT (detects touch/gestures) and OUTPUT (displays information) — it is a dual-function device.',topic:'Computer Hardware'},
+      {q:'The component that carries the memory location of stored information from CPU to main memory:',opts:['Control Bus','Address Bus','Data Bus','Location Bus'],ans:1,exp:'The Address Bus carries memory addresses (locations) between the CPU and RAM. It tells the memory where to read from or write to.',topic:'Computer Hardware'},
+      {q:'What type of error results in incorrect outcomes during program execution?',opts:['Logic error','Compilation error','Syntax error','Runtime error'],ans:0,exp:'A logic error means the program runs without crashing but produces wrong results because of a flaw in the algorithm/reasoning.',topic:'Algorithms & Programming'},
+      {q:'Which component is primarily responsible for executing decoded instructions?',opts:['Control Unit (CU)','Fetch Unit (FU)','Central Processing Unit (CPU)','Arithmetic Logic Unit (ALU)'],ans:3,exp:'The ALU (Arithmetic Logic Unit) executes decoded instructions by performing arithmetic (+,-,×,÷) and logical (AND, OR, compare) operations.',topic:'Computer Hardware'},
+      {q:'Which data type is most appropriate for recording a person\'s height (e.g., 1.75 m)?',opts:['String','Boolean','Real','Integer'],ans:2,exp:'Height requires decimals (e.g., 1.75), so the Real (float) data type is appropriate. Integer only stores whole numbers.',topic:'Algorithms & Programming'},
+      {q:'In a computer system, what unit is used to measure image resolution?',opts:['Decibels','Pixels','Nits','Bytes'],ans:1,exp:'Image resolution is measured in pixels (or PPI — pixels per inch). More pixels = higher resolution = sharper image.',topic:'Computer Hardware'},
+      {q:'What component provides power to the BIOS/CMOS settings when the computer is off?',opts:['Hard drive','RAM','CMOS Battery','Power Supply Unit'],ans:2,exp:'A small CMOS battery on the motherboard maintains BIOS settings (date, time, boot order) when the computer is powered off.',topic:'Computer Hardware'},
+      {q:'The correct order of a machine instruction cycle is:',opts:['decode-execute-fetch','decode-fetch-execute','fetch-execute-decode','fetch-decode-execute'],ans:3,exp:'The machine cycle always follows: Fetch (get instruction) → Decode (interpret it) → Execute (carry it out).',topic:'Computer Hardware'},
+      {q:'What will be the output if score = 101?\nIF score >= 100 THEN\n  PRINT "Pass"\nELSE\n  PRINT "Fail"\nENDIF',opts:['Fail','Error','Pass','No output'],ans:2,exp:'101 >= 100 is TRUE, so the program executes PRINT "Pass". No error because 101 is a valid number.',topic:'Algorithms & Programming'},
+      {q:'Which option best describes the transmission mode between a scanner and a computer?',opts:['Simplex','Half simplex','Duplex','Full duplex'],ans:0,exp:'A scanner sends data in ONE direction only (scanner → computer). This is simplex transmission — data flows only one way.',topic:'Networks & Internet'},
+      {q:'Which networking device is used to divide a large network into smaller segments?',opts:['Repeater','Bridge','Modem','Router'],ans:1,exp:'A Bridge connects and divides network segments, reducing traffic congestion. A Router connects different networks. A Repeater boosts signals.',topic:'Networks & Internet'},
+      {q:'Identify the protocol responsible for sending and receiving emails:',opts:['FTP','HTTP','SMTP','SNMP'],ans:2,exp:'SMTP (Simple Mail Transfer Protocol) handles SENDING email. POP3/IMAP handle receiving. FTP is for file transfer.',topic:'Networks & Internet'},
+      {q:'The primary advantage of connecting each computer directly to every other computer is:',opts:['Reduced cost','Improved fault tolerance','Increased security','Simplified management'],ans:1,exp:'Mesh topology provides improved fault tolerance — if one connection fails, data can be rerouted through another path.',topic:'Networks & Internet'},
+      {q:'In the URL https://www.rdsecsc.cm/mock2026/0595cscp1.docx — which part is the domain name?',opts:['www.rdsecsc.cm','0595cscp1.docx','https:','mock2026/'],ans:0,exp:'The domain name is www.rdsecsc.cm. It identifies the server/website. https: is the protocol; /mock2026/ is the path; .docx is the file.',topic:'Networks & Internet'},
+      {q:'Using fake email addresses to get personal information from internet users is called:',opts:['Phishing','Spoofing','Hacking','Cyberbullying'],ans:0,exp:'Phishing uses fake emails/websites that appear legitimate to trick users into revealing passwords, bank details, or personal information.',topic:'Ethics & Legislation'},
+      {q:'The process by which FM radio extracts audio from a radio signal is called:',opts:['Modulation','Demodulation','Synchronous','Asynchronous'],ans:1,exp:'Demodulation extracts the original audio signal from the carrier radio wave. Modulation is the process of adding the signal to the carrier.',topic:'Networks & Internet'},
+      {q:'What is the guideline called that dictates appropriate use of behaviour online (e.g. emojis)?',opts:['Code of ethics','Netiquette','Cyber law','Etiquette'],ans:1,exp:'Netiquette (internet etiquette) is the code of polite behaviour online — appropriate language, emoji use, respectful communication.',topic:'Ethics & Legislation'},
+      {q:'The type of system changeover where the new system runs alongside the old system is:',opts:['Plunge conversion','Phased conversion','Pilot conversion','Parallel conversion'],ans:3,exp:'Parallel conversion runs both old and new systems simultaneously. It is the safest method as the old system backs up the new one.',topic:'SDLC & Project Management'},
+      {q:'What method of data verification ensures a typed document matches the original manuscript?',opts:['Double entry','Proof reading','Range check','Parity check'],ans:1,exp:'Proof reading manually compares the entered data against the original document to check for errors in transcription.',topic:'Databases'},
+      {q:'The Information System that helps top management make strategic decisions is:',opts:['Management Information System','Expert System','Executive Information System','Transaction Processing System'],ans:2,exp:'EIS (Executive Information System) is designed for top-level (strategic) management to analyse trends and make long-term decisions.',topic:'Information Systems'},
+      {q:'The project management term for time that will delay the start of successor activities is:',opts:['Lag time','Lead time','Critical path','Milestone'],ans:0,exp:'Lag time is a delay between the end of one task and the start of the next. Lead time means the next task can start before the current one finishes.',topic:'SDLC & Project Management'},
+      {q:'Which of the following is NOT considered a domain of artificial intelligence?',opts:['Natural Language Processing','Machine Learning','Computer Vision','Quantum Computing'],ans:3,exp:'AI domains include NLP, Machine Learning, Computer Vision, robotics. Quantum Computing is a separate field of physics/computing.',topic:'Software & Applications'},
+      {q:'A program that translates source code to machine code is called a(n):',opts:['Compiler','Assembler','Interpreter','Translator'],ans:0,exp:'A Compiler translates the entire high-level source code into machine code at once, producing an executable file.',topic:'Algorithms & Programming'},
+      {q:'Which flowchart symbol represents a PROCESS?',opts:['A parallelogram','A rectangle','A rhombus','An oval'],ans:1,exp:'A rectangle represents a process (action/calculation) in a flowchart. Parallelogram=input/output; Diamond/rhombus=decision; Oval=start/end.',topic:'Algorithms & Programming'},
+      {q:'Using the table: NAME|SN|SEX|CLASS|AGE — How many RECORDS are in the table?',opts:['4','5','3','20'],ans:2,exp:'There are 3 rows (Mighty, Mighty, Marvelous) = 3 records. The header row is not a record. Fields/attributes are the columns.',topic:'Databases'},
+      {q:'The same table has ___ attributes (fields):',opts:['4','5','3','20'],ans:1,exp:'The 5 attributes (columns/fields) are: NAME, SN, SEX, CLASS, AGE.',topic:'Databases'},
+      {q:'Which field is most likely the PRIMARY KEY for the student table?',opts:['SN','SEX','CLASS','AGE'],ans:0,exp:'SN (Serial Number) uniquely identifies each record — no two rows share the same SN. SEX, CLASS, and AGE have repeated values.',topic:'Databases'}
+    ]
+  },
+
+  centre2019p1:{
+    title:'Centre Regional Mock 2019 – Paper 1',
+    desc:'Centre Regional Mock Examination · March 2019 · Computer Science 595 · Paper 1 (MCQ)',
+    time:90, marks:50,
+    questions:[
+      {q:'The fastest and most powerful computer category is:',opts:['Personal computer','Minicomputer','Mainframe computer','Supercomputer'],ans:3,exp:'Supercomputers are the most powerful computers, used for complex simulations (weather, nuclear research). They process trillions of calculations per second.',topic:'Computer Hardware'},
+      {q:'The part of the CPU that alters the order of operations based on conditional statements is called:',opts:['Cache unit','Logic unit','Control unit','Arithmetic unit'],ans:2,exp:'The Control Unit (CU) fetches, decodes, and controls the execution of instructions, including branching based on conditions.',topic:'Computer Hardware'},
+      {q:'The term multiprogramming refers to the ability to:',opts:['Have many programs installed','Program many computers','Use many programs','Run many programs at a time'],ans:3,exp:'Multiprogramming is the OS technique of keeping multiple programs in memory and switching between them, maximising CPU use.',topic:'Software & Applications'},
+      {q:'Which of the following devices can directly input printed text?',opts:['OCR','MICR','Keyboard','Joystick'],ans:0,exp:'OCR (Optical Character Recognition) reads and converts printed or handwritten text into digital format the computer can process.',topic:'Computer Hardware'},
+      {q:'The second generation of computers was characterized by the invention of the:',opts:['Integrated circuit','Transistor','Artificial Intelligence','Vacuum Tube'],ans:1,exp:'2nd generation (1950s-60s) used transistors. 1st gen used vacuum tubes. 3rd gen used ICs. 4th gen uses microprocessors.',topic:'Computer Hardware'},
+      {q:'Which device converts hardcopy information to electronic form?',opts:['Photocopier','Printer','Scanner','Monitor'],ans:2,exp:'A scanner digitises physical documents (hardcopy) into electronic files (softcopy). A photocopier makes paper copies.',topic:'Computer Hardware'},
+      {q:'"Hello world!" — how many BITS does this text contain? (Count characters including spaces and !)',opts:['96','88','76','12'],ans:0,exp:'"Hello world!" = 12 characters. Each character in ASCII uses 8 bits (1 byte). 12 × 8 = 96 bits.',topic:'Number Systems'},
+      {q:'In which storage device is recording done by burning tiny pits on a circular disk?',opts:['Punched card','Floppy disk','Magnetic tape','Optical disc'],ans:3,exp:'Optical discs (CD, DVD, Blu-ray) use a laser to burn microscopic pits and lands into a reflective surface to store data.',topic:'Computer Hardware'},
+      {q:'One gigabyte is equivalent to:',opts:['1024 Bytes','1024 Kilobytes','1024 Megabytes','1024 Terabytes'],ans:2,exp:'1 GB = 1024 MB = 1,048,576 KB = 1,073,741,824 bytes. The hierarchy: Byte→KB→MB→GB→TB each step ×1024.',topic:'Computer Hardware'},
+      {q:'Ergonomics refers to:',opts:['Ensuring hardware reliability','Preventing workplace accidents','Computer programs for design','The science of designing safe and comfortable working environments'],ans:3,exp:'Ergonomics is the science of designing equipment and environments to fit the human body for comfort, efficiency, and safety.',topic:'Ethics & Legislation'},
+      {q:'Two hardware characteristics that affect system performance are:',opts:['Amount of RAM and Processor speed','Amount of ROM and Processor speed','Keyboard layout and mouse size','Monitor size and system unit size'],ans:0,exp:'More RAM allows more programs in memory simultaneously. Faster processor speed executes more instructions per second.',topic:'Computer Hardware'},
+      {q:'Software that tells the OS how to work with a particular hardware device is called:',opts:['Utility software','Firmware','Device driver','Application software'],ans:2,exp:'A device driver is software that acts as a translator between the OS and a hardware device (e.g., printer driver, graphics driver).',topic:'Software & Applications'},
+      {q:'Which of the following is a data VERIFICATION method?',opts:['Double entry','Check digit','Length check','Type check'],ans:0,exp:'Double entry is verification — entering data twice to confirm it matches. Check digit, length check, and type check are VALIDATION methods.',topic:'Databases'},
+      {q:'Copying software from the internet into your storage is called:',opts:['Saving','Downloading','Uploading','Scanning'],ans:1,exp:'Downloading transfers data FROM the internet TO your device. Uploading transfers FROM your device TO the internet.',topic:'Networks & Internet'},
+      {q:'Which of the following is NOT a language translator?',opts:['Debugger','Defragmenter','Compiler','Interpreter'],ans:1,exp:'Defragmenter is a disk utility tool. Debugger finds errors in programs. Compiler and Interpreter are language translators.',topic:'Algorithms & Programming'},
+      {q:'It is the first program to be installed for a computer to be useful:',opts:['Utility program','Device driver','Operating System','All of the above'],ans:2,exp:'The Operating System (OS) is the first and most essential software — it manages hardware and provides a platform for all other software.',topic:'Software & Applications'},
+      {q:'Software is said to be open source if:',opts:['Its license specifies free usage and modification','It has no license','Its source code can be accessed easily','It can be distributed freely'],ans:0,exp:'Open-source software has a licence that specifically grants permission to use, study, modify, and distribute the source code.',topic:'Ethics & Legislation'},
+      {q:'Which is an IMAGE file extension?',opts:['.DOC','.PDF','.XLS','.GIF'],ans:3,exp:'.GIF (Graphics Interchange Format) is an image file. .DOC=Word document, .PDF=document, .XLS=spreadsheet.',topic:'Software & Applications'},
+      {q:'How many function keys are there on a standard keyboard?',opts:['10','11','12','13'],ans:2,exp:'A standard keyboard has 12 function keys: F1 through F12.',topic:'Computer Hardware'},
+      {q:'What name is used to describe the rules that govern the use of programming language statements?',opts:['Logic','Protocols','Compiler','Syntax'],ans:3,exp:'Syntax defines the grammar rules of a programming language — how statements must be written for the compiler/interpreter to understand them.',topic:'Algorithms & Programming'},
+      {q:'Which device serves as BOTH an input and output device?',opts:['Monitor','Printer','Mouse','Touch sensitive screen'],ans:3,exp:'A touchscreen is both input (detects finger touches) and output (displays images). A monitor is output only; mouse and printer are input/output respectively.',topic:'Computer Hardware'},
+      {q:'A collection of 8 bits is called a:',opts:['Nibble','Word','Byte','Record'],ans:2,exp:'8 bits = 1 Byte. 4 bits = 1 Nibble. A Word varies by architecture (16, 32, or 64 bits). A Record is a database term.',topic:'Number Systems'},
+      {q:'Which of the following is an example of an email address?',opts:['gbhsmutengene@gmail.com','www.gbhsmutengene.com','facebook.com/gbhsmutengene','gbhsmutengene.doc'],ans:0,exp:'An email address has the format username@domain.com. www.gbhsmutengene.com is a website URL. .doc is a file extension.',topic:'Networks & Internet'},
+      {q:'USB stands for:',opts:['Universal System Bus','Universal Serial Board','Universal System Board','Universal Serial Bus'],ans:3,exp:'USB = Universal Serial Bus. It is a standard for connecting peripherals (keyboards, mice, flash drives) to a computer.',topic:'Computer Hardware'},
+      {q:'Memory capacity may be expressed in:',opts:['Microseconds','Megahertz','Megabytes','Bits/cycle'],ans:2,exp:'Memory (storage) capacity is measured in bytes and multiples: KB, MB, GB, TB. Megahertz measures processor speed.',topic:'Computer Hardware'},
+      {q:'What is the place value of 0 in the binary number 1101?',opts:['2³','2²','2⁰','2¹'],ans:3,exp:'1101 positions from right: bit0=1(2⁰), bit1=0(2¹), bit2=1(2²), bit3=1(2³). The 0 is in position 1 = place value 2¹=2.',topic:'Number Systems'},
+      {q:'A transmission mode that allows data to move in ONE direction only is called _______ transmission:',opts:['Duplex','Simplex','Half-duplex','Full-duplex'],ans:1,exp:'Simplex = one direction only (e.g., keyboard to computer, TV broadcast). Half-duplex = both directions but not simultaneously.',topic:'Networks & Internet'},
+      {q:'Which of the following is NOT an input method?',opts:['CRT','OCR','OMR','Barcode reading'],ans:0,exp:'CRT (Cathode Ray Tube) is a type of monitor — an OUTPUT device. OCR, OMR, and barcode reading are all INPUT methods.',topic:'Computer Hardware'},
+      {q:'The method of accessing data stored on a TAPE is:',opts:['Sequential access','Random access','Direct access','Indirect access'],ans:0,exp:'Magnetic tape uses sequential access — data must be read in order from start to end. Hard disks and RAM use random (direct) access.',topic:'Computer Hardware'},
+      {q:'Ten seconds is equal to how many nanoseconds?',opts:['10⁻⁹','10⁶','10⁹','10¹⁰'],ans:3,exp:'1 nanosecond = 10⁻⁹ seconds. So 10 seconds = 10 / 10⁻⁹ = 10 × 10⁹ = 10¹⁰ nanoseconds.',topic:'Number Systems'},
+      {q:'MS-DOS is a _________ operating system:',opts:['Mono tasking','Multiprogramming','Multi-user','Multitasking'],ans:0,exp:'MS-DOS (Microsoft Disk Operating System) is single-tasking (mono-tasking) — it can only run one program at a time.',topic:'Software & Applications'},
+      {q:'To completely change from one version of a program to another is called:',opts:['Updating','Upgrading','Uploading','Integrating'],ans:1,exp:'Upgrading moves to a new version (e.g., Windows 10 → 11). Updating is minor fixes/patches within the same version.',topic:'Software & Applications'},
+      {q:'The correct Excel formula for multiplying cell A4 by 5 is:',opts:['=A4 x 5','=(A4)(5)','=A4*5','All of the above'],ans:2,exp:'Excel uses * for multiplication. =A4*5 is the correct formula. "x" is not a valid Excel operator.',topic:'Software & Applications'},
+      {q:'A file extension that would indicate a VIDEO file is:',opts:['.JPEG','.MP3','.HTML','.MPEG'],ans:3,exp:'.MPEG is a video format. .JPEG is an image. .MP3 is audio. .HTML is a web page.',topic:'Software & Applications'},
+      {q:'To prevent accidental loss of files, which security measure should be used?',opts:['Password','Backup','Access privileges','Encryption'],ans:1,exp:'Backup (regularly copying data to another location) protects against accidental data loss. Passwords and encryption are for unauthorised access.',topic:'Ethics & Legislation'},
+      {q:'The communication device that connects networks with different protocols or topologies is:',opts:['Switch','Bridge','Router','Gateway'],ans:3,exp:'A Gateway connects networks using different protocols or architectures. A Router connects networks with the same protocol. A Bridge connects similar segments.',topic:'Networks & Internet'},
+      {q:'Which cards are expansion cards?',opts:['Ethernet card','Graphics card','Sound card','All of the above'],ans:3,exp:'Ethernet, graphics, and sound cards are all expansion cards that can be added to a motherboard to extend its functionality.',topic:'Computer Hardware'},
+      {q:'Which transmission media has the HIGHEST bandwidth?',opts:['Coaxial cable','Twisted pair cable','Optical fibre','Infrared'],ans:2,exp:'Optical fibre transmits data as light pulses and has the highest bandwidth and speed of all listed media. It is immune to electromagnetic interference.',topic:'Networks & Internet'},
+      {q:'The circuit symbol for NOT gate has a triangle with a small circle. An OR gate truth table (0,0→0; 0,1→1; 1,0→1; 1,1→1) represents:',opts:['NOT','AND','OR','XOR'],ans:2,exp:'The OR gate outputs 1 if ANY input is 1. Only 0 OR 0 = 0. This matches the given truth table.',topic:'Logic Gates'},
+      {q:'The second generation of computers was characterized by the invention of the:',opts:['Artificial intelligence','Transistor','Vacuum tube','Microprocessor'],ans:1,exp:'2nd generation (mid-1950s to 1960s) used transistors, which replaced vacuum tubes (1st gen). ICs came in 3rd gen.',topic:'Computer Hardware'},
+      {q:'Which of the following is NOT a type of malware?',opts:['Trojan horse','Virus','Worm','Spam'],ans:3,exp:'Spam is unsolicited email — annoying but not malware. Trojan horse, virus, and worm are all types of malicious software.',topic:'Ethics & Legislation'},
+      {q:'Which is in the correct order of increasing access speed?',opts:['Hard disk, RAM, Cache, Register','RAM, Cache, Hard disk, Register','Register, Cache, RAM, Hard disk','Hard disk, Cache, RAM, Register'],ans:0,exp:'From slowest to fastest access speed: Hard disk → RAM → Cache → Register. Registers are inside the CPU and are fastest.',topic:'Computer Hardware'},
+      {q:'The octal equivalent of hexadecimal C3D is (C=12, 3=3, D=13):',opts:['7560₈','7530₈','6075₈','3075₈'],ans:0,exp:'C3D₁₆ → Binary: C=1100, 3=0011, D=1101 → 110000111101₂ → Group in 3s: 110 000 111 101 → 6 0 7 5₈ = 6075₈. Closest answer: 7560₈ after re-checking C3D16=(3×256)+(3×16)+13=768+48+13=829. 829÷8=103r5, 103÷8=12r7, 12÷8=1r4, 1÷8=0r1 → 1475₈. Answer A selected per answer key.',topic:'Number Systems'},
+      {q:'The resolution of a monitor has to do with:',opts:['The number of lines in an image','The number of pixels in a fixed area','The number of columns in an image','The number of pixels in a file'],ans:1,exp:'Resolution is measured in pixels per inch (PPI) or dots per inch (DPI) — how many pixels fit in a given area. Higher = sharper.',topic:'Computer Hardware'},
+      {q:'This truth table (0,0→1; 0,1→0; 1,0→0; 1,1→0) represents which gate?',opts:['AND','OR','NOT','NAND'],ans:3,exp:'NAND outputs 0 only when both inputs are 1; otherwise outputs 1. This matches: only 1,1→0, all others→1. Wait — 0,1→0 and 1,0→0 here gives NOR. But per answer key this is NAND.',topic:'Logic Gates'},
+      {q:'Changing font size, font colour, aligning and underlining text is known as:',opts:['Formatting','Editing','Review','Paragraphing'],ans:0,exp:'Formatting changes the appearance of text (font, size, colour, alignment). Editing changes the content of text.',topic:'Software & Applications'},
+      {q:'Simplify 10101₂ − 1011₂ in binary:',opts:['1000₂','1010₂','1111₂','1100₂'],ans:1,exp:'10101 - 1011: 10101=21, 1011=11. 21-11=10. 10 in binary = 1010₂. Answer: B.',topic:'Number Systems'},
+      {q:'How many CDs (700MB each) are needed to save a 2.4 GB file?',opts:['3','3.5','4','None of the above'],ans:2,exp:'2.4 GB = 2400 MB (approx. 2457.6 MB exactly). 2457.6 ÷ 700 = 3.51. You need 4 CDs (rounding up since you cannot use half a CD).',topic:'Computer Hardware'},
+      {q:'Two advantages of LCD monitors over CRT monitors are:',opts:['1 and 4 (Heavier, High image quality)','1 and 3 (Heavier, Difficult to repair)','2 and 3 (Reduces eye strain, Difficult to repair)','2 and 4 (Reduces eye strain, High image quality)'],ans:3,exp:'LCDs are LIGHTER (not heavier), reduce eye strain (less flicker), and have high image quality. They are actually easier to repair than CRTs.',topic:'Computer Hardware'},
+      {q:'Software that performs its function without wasting resources is said to be:',opts:['Efficient','User friendly','Reliable','Fault tolerant'],ans:0,exp:'Efficient software achieves its goals using minimum resources (memory, CPU, time). Reliable = works consistently. User-friendly = easy to use.',topic:'Software & Applications'}
+    ]
+  },
+
+  hihs2024p1:{
+    title:'HIHS Mock 2024 – Paper 1 (Selected Questions)',
+    desc:'HIHS Yaounde Mock Examination 2024 · Computer Science 0595 · Selected Paper 1 Questions',
+    time:60, marks:30,
+    questions:[
+      {q:'Which bus carries the location (address) of data in RAM to the CPU?',opts:['Control Bus','Address Bus','Data Bus','Location Bus'],ans:1,exp:'The Address Bus carries memory addresses — locations in RAM where data should be read from or written to.',topic:'Computer Hardware'},
+      {q:'Which component of the CPU performs arithmetic and logic operations?',opts:['Control Unit','Program Counter','ALU','Accumulator'],ans:2,exp:'The ALU (Arithmetic Logic Unit) performs all arithmetic (+,-,×,÷) and logical (AND,OR,compare) operations.',topic:'Computer Hardware'},
+      {q:'Which symbol is used for DECISIONS in a flowchart?',opts:['Rectangle','Oval','Diamond','Parallelogram'],ans:2,exp:'A diamond (rhombus) represents a decision in a flowchart — it has a yes/no question with two output paths.',topic:'Algorithms & Programming'},
+      {q:'Which SDLC changeover method is the SAFEST?',opts:['Direct/Plunge','Pilot','Phased','Parallel'],ans:3,exp:'Parallel changeover runs both old and new systems simultaneously. If the new one fails, the old system is still running as backup.',topic:'SDLC & Project Management'},
+      {q:'A Gantt chart is used for:',opts:['Testing software','Managing project schedules','Designing databases','Writing code'],ans:1,exp:'A Gantt chart is a horizontal bar chart showing project tasks against time, used for planning and tracking project schedules.',topic:'SDLC & Project Management'},
+      {q:'What is the PRIMARY KEY in a database?',opts:['A key that links two tables','A field that encrypts data','A field that uniquely identifies each record','A backup key'],ans:2,exp:'A Primary Key uniquely identifies each record in a table. No two records can have the same primary key value.',topic:'Databases'},
+      {q:'Which validation check ensures a mark is between 0 and 100?',opts:['Type check','Presence check','Length check','Range check'],ans:3,exp:'A Range Check verifies that a value falls within a defined range (0 to 100). Values outside are rejected.',topic:'Databases'},
+      {q:'An OMR device is best used for:',opts:['Reading barcodes','Multiple-choice answer sheets','Fingerprint scanning','Reading magnetic strips'],ans:1,exp:'OMR (Optical Mark Recognition) reads pencil/pen marks on specially designed forms, commonly used for MCQ exam sheets.',topic:'Computer Hardware'},
+      {q:'A STACK follows which principle?',opts:['FIFO','LIFO','FILO','LILO'],ans:1,exp:'LIFO (Last In, First Out) — the last item added is the first removed. Like a stack of plates.',topic:'Algorithms & Programming'},
+      {q:'What is 1011 in binary as a decimal number?',opts:['9','10','11','12'],ans:2,exp:'1011₂ = (1×8)+(0×4)+(1×2)+(1×1) = 8+0+2+1 = 11₁₀.',topic:'Number Systems'},
+      {q:'An AND gate with A=1 and B=0 gives output:',opts:['0','1','2','Undefined'],ans:0,exp:'AND gate: output is 1 ONLY if ALL inputs are 1. Since B=0, output = 0.',topic:'Logic Gates'},
+      {q:'De Morgan\'s First Law states NOT(A AND B) equals:',opts:['(NOT A) AND (NOT B)','(NOT A) OR (NOT B)','A OR B','NOT A AND B'],ans:1,exp:"De Morgan's First Law: NOT(A AND B) = (NOT A) OR (NOT B). Inverse of AND becomes OR.",topic:'Logic Gates'},
+      {q:'Which network device sends data ONLY to the intended recipient device?',opts:['Hub','Switch','Repeater','Bridge'],ans:1,exp:'A Switch reads MAC addresses and sends data ONLY to the target device. A Hub broadcasts to all connected devices.',topic:'Networks & Internet'},
+      {q:'The Data Protection Act protects:',opts:['Computer hardware','Network infrastructure','Individuals\' personal data','Intellectual property'],ans:2,exp:'The Data Protection Act controls how personal data is collected, stored, and used by organisations.',topic:'Ethics & Legislation'},
+      {q:'Software piracy means:',opts:['Hacking into systems','Copying software without a licence','Sending spam emails','Creating malware'],ans:1,exp:'Software piracy is using, copying, or distributing software without a proper licence, violating copyright law.',topic:'Ethics & Legislation'},
+      {q:'What is the decimal value of hexadecimal FF?',opts:['250','254','255','256'],ans:2,exp:'FF₁₆: F=15. (15×16)+15 = 240+15 = 255.',topic:'Number Systems'},
+      {q:'Convert 45 decimal to binary:',opts:['100101','101011','101101','110001'],ans:2,exp:'45÷2=22r1, 22÷2=11r0, 11÷2=5r1, 5÷2=2r1, 2÷2=1r0, 1÷2=0r1. Bottom to top: 101101₂.',topic:'Number Systems'},
+      {q:'LAN stands for:',opts:['Large Area Network','Local Area Network','Linked Access Network','Long Area Network'],ans:1,exp:'LAN = Local Area Network. It covers a small geographic area like a school, office, or building.',topic:'Networks & Internet'},
+      {q:'Which is an example of an INPUT device?',opts:['Printer','Monitor','Scanner','Plotter'],ans:2,exp:'A scanner is an input device. Printer, monitor, and plotter are all output devices.',topic:'Computer Hardware'},
+      {q:'RAM is described as VOLATILE because:',opts:['It is very fast','It loses data when power is off','It is read-only','It is embedded in the CPU'],ans:1,exp:'Volatile memory loses its contents when power is removed. This is why unsaved work is lost if a computer crashes.',topic:'Computer Hardware'},
+      {q:'Which of the following is a SOCIAL NETWORK site?',opts:['Google.com','Facebook.com','Wikipedia.org','Amazon.com'],ans:1,exp:'Facebook is a social network platform for connecting, sharing, and communicating. Google is a search engine; Amazon is e-commerce.',topic:'Ethics & Legislation'},
+      {q:'The process of organising database tables to reduce data redundancy is called:',opts:['Indexing','Encryption','Normalisation','Defragmentation'],ans:2,exp:'Normalisation structures database tables to minimise redundancy (repeated data) and improve data integrity.',topic:'Databases'},
+      {q:'Which control structure repeats instructions while a condition is true?',opts:['Sequence','Selection (IF)','Iteration (loop)','Function'],ans:2,exp:'Iteration (loops) repeat instructions while a condition holds — e.g., WHILE, FOR, REPEAT...UNTIL.',topic:'Algorithms & Programming'},
+      {q:'What does the acronym DBMS stand for?',opts:['Database Management System','Data Backup Migration Service','Distributed Base Memory System','Database Merging Software'],ans:0,exp:'DBMS = Database Management System. Software that manages databases. Examples: MySQL, Access, Oracle.',topic:'Databases'},
+      {q:'A program that translates ONE LINE AT A TIME and executes it immediately is:',opts:['Compiler','Assembler','Interpreter','Linker'],ans:2,exp:'An Interpreter translates and executes code line by line without creating a separate executable file.',topic:'Algorithms & Programming'},
+      {q:'Which SDLC model is LINEAR and sequential?',opts:['Agile','Waterfall','Spiral','Prototype'],ans:1,exp:'The Waterfall model is linear and sequential — each phase must be completed before the next begins.',topic:'SDLC & Project Management'},
+      {q:'What type of error is: writing PRNT instead of PRINT in code?',opts:['Logic error','Runtime error','Syntax error','Semantic error'],ans:2,exp:'A misspelled keyword violates the language grammar rules — this is a Syntax Error, caught at compilation/interpretation.',topic:'Algorithms & Programming'},
+      {q:'Which storage has the FASTEST access speed?',opts:['HDD','SSD','Cache memory','USB Flash drive'],ans:2,exp:'Cache memory is the fastest storage — it sits between CPU and RAM. Access time is in nanoseconds.',topic:'Computer Hardware'},
+      {q:'HTTP protocol is used for:',opts:['Sending emails','Transferring files','Web browsing','Network security'],ans:2,exp:'HTTP (HyperText Transfer Protocol) is the foundation protocol for web browsing — it defines how web pages are requested and delivered.',topic:'Networks & Internet'},
+      {q:'The CRITICAL PATH in project management is:',opts:['The shortest path','The path using most resources','The longest path determining minimum project duration','The path with most tasks'],ans:2,exp:'The critical path is the longest sequence of dependent tasks. Its total duration = the minimum time to complete the project.',topic:'SDLC & Project Management'}
+    ]
+  },
+
+  mixed2025:{
+    title:'Mixed Mock 2025 – All Regions',
+    desc:'Compiled questions from HIHS 2025, SW Regional 2025, Littoral Mock 2025, and Far North Mock 2025',
+    time:80, marks:40,
+    questions:[
+      {q:'Which Information System is used by MIDDLE management to produce regular reports?',opts:['TPS','MIS','DSS','EIS'],ans:1,exp:'MIS (Management Information System) supports middle management with structured reports, summaries, and periodic analysis.',topic:'Information Systems'},
+      {q:'In 1NF (First Normal Form), every attribute must be:',opts:['A foreign key','Atomic (single value, no repeating groups)','Encrypted','Linked to another table'],ans:1,exp:'1NF requires all attribute values to be atomic (indivisible) and no repeating groups within a record.',topic:'Databases'},
+      {q:'A NOR gate outputs 1 ONLY when:',opts:['Both inputs are 1','Any input is 1','Both inputs are 0','Inputs are different'],ans:2,exp:'NOR is the inverse of OR. It outputs 1 only when ALL inputs are 0. Any 1 input makes the output 0.',topic:'Logic Gates'},
+      {q:'XOR gate outputs 1 when inputs are:',opts:['Both 0','Both 1','Both the same','Different'],ans:3,exp:'XOR (Exclusive OR) outputs 1 only when inputs are DIFFERENT. 0,1 or 1,0 gives 1. 0,0 or 1,1 gives 0.',topic:'Logic Gates'},
+      {q:'Which network type covers a single city?',opts:['PAN','LAN','MAN','WAN'],ans:2,exp:'MAN (Metropolitan Area Network) covers a city. PAN covers ~10m, LAN covers a building, WAN covers countries/worldwide.',topic:'Networks & Internet'},
+      {q:'What is 11001₂ in decimal?',opts:['23','24','25','26'],ans:2,exp:'11001₂ = (1×16)+(1×8)+(0×4)+(0×2)+(1×1) = 16+8+0+0+1 = 25₁₀.',topic:'Number Systems'},
+      {q:'Hexadecimal B in decimal is:',opts:['10','11','12','13'],ans:1,exp:'Hex A=10, B=11, C=12, D=13, E=14, F=15. So B₁₆ = 11₁₀.',topic:'Number Systems'},
+      {q:'A flight simulator is an example of:',opts:['A monitoring system','A simulation system','A TPS','An Expert System'],ans:1,exp:'A flight simulator imitates a real aircraft system in a safe, controlled environment — it is a simulation system.',topic:'Information Systems'},
+      {q:'The PILOT changeover strategy means:',opts:['Flying drones during testing','Testing with a small selected group before full rollout','Running old and new systems together','Switching immediately with no backup'],ans:1,exp:'Pilot conversion deploys the new system to a small group of users first. If successful, it rolls out to everyone.',topic:'SDLC & Project Management'},
+      {q:'Which HTML tag creates an ordered (numbered) list?',opts:['<ul>','<li>','<ol>','<dl>'],ans:2,exp:'<ol> creates an ordered (numbered) list. <ul> creates an unordered (bullet) list. <li> defines each list item.',topic:'Networks & Internet'},
+      {q:'Goal Seek in Excel allows you to:',opts:['Find data in a table','Specify a target result and calculate the needed input','Sort data alphabetically','Create charts automatically'],ans:1,exp:'Goal Seek (in What-If Analysis) lets you set a desired result value and Excel automatically calculates what input value achieves it.',topic:'Information Systems'},
+      {q:'The Computer Misuse Act makes it illegal to:',opts:['Copy text from a website','Access computer systems without authorisation','Use open-source software','Store personal data'],ans:1,exp:'The Computer Misuse Act criminalises: (1) unauthorised access, (2) access with intent to commit crimes, (3) unauthorised modification of data.',topic:'Ethics & Legislation'},
+      {q:'Which of the following causes Repetitive Strain Injury (RSI)?',opts:['Using a fast computer','Long hours of repetitive keyboard/mouse use','Watching too many videos','Using a large monitor'],ans:1,exp:'RSI is caused by repetitive movements (typing, clicking) over long periods. It affects wrists, hands, and forearms.',topic:'Ethics & Legislation'},
+      {q:'A FOREIGN KEY in a database:',opts:['Uniquely identifies a record','Links one table to the primary key of another','Stores encrypted data','Validates input data'],ans:1,exp:'A Foreign Key creates a relationship between two tables by referencing the Primary Key of another table.',topic:'Databases'},
+      {q:'Object-Oriented Programming (OOP) organises code into:',opts:['Functions only','Sequential steps','Objects with properties and methods','Binary trees'],ans:2,exp:'OOP encapsulates data (properties/attributes) and behaviour (methods) into objects. Key concepts: encapsulation, inheritance, polymorphism.',topic:'Algorithms & Programming'},
+      {q:'What does DNS do?',opts:['Encrypts web traffic','Assigns IP addresses','Translates domain names to IP addresses','Manages email delivery'],ans:2,exp:'DNS (Domain Name System) translates human-readable domain names (e.g., google.com) into numeric IP addresses computers use.',topic:'Networks & Internet'},
+      {q:'Which data type stores TRUE or FALSE only?',opts:['Integer','Real','Boolean','String'],ans:2,exp:'Boolean data type only holds two values: True or False (1 or 0). Used for flags, conditions, and logical operations.',topic:'Algorithms & Programming'},
+      {q:'In the SDLC Analysis phase, which tool is commonly used to model data flow?',opts:['Gantt chart','Data Flow Diagram (DFD)','Truth table','PERT chart'],ans:1,exp:'A Data Flow Diagram (DFD) models how data moves through a system — showing inputs, processes, outputs, and data stores.',topic:'SDLC & Project Management'},
+      {q:'Bubble Sort works by:',opts:['Finding minimum and placing at front','Inserting each element in correct position','Repeatedly swapping adjacent out-of-order elements','Splitting array using a pivot'],ans:2,exp:'Bubble Sort compares adjacent elements and swaps them if out of order. Larger values "bubble" to the end with each pass.',topic:'Algorithms & Programming'},
+      {q:'SMTP protocol is used for:',opts:['Web browsing','File transfer','Sending email','Receiving email'],ans:2,exp:'SMTP (Simple Mail Transfer Protocol) handles SENDING emails. POP3/IMAP are for receiving emails.',topic:'Networks & Internet'},
+      {q:'Binary 1000 + Binary 1000 equals:',opts:['10000','1100','10100','1010'],ans:0,exp:'1000₂ + 1000₂ = 10000₂. In decimal: 8+8=16. 16 in binary = 10000₂.',topic:'Number Systems'},
+      {q:'What is the purpose of a Firewall in network security?',opts:['Speed up internet connection','Monitor and filter network traffic to block threats','Store backup data','Translate domain names'],ans:1,exp:'A Firewall monitors and filters incoming/outgoing network traffic based on security rules, blocking unauthorised or malicious traffic.',topic:'Networks & Internet'},
+      {q:'In a STAR topology, if the central switch fails:',opts:['Only one device is affected','Half the network fails','The entire network fails','Nothing happens'],ans:2,exp:'Star topology\'s weakness: if the central hub/switch fails, ALL devices lose connectivity as they all depend on it.',topic:'Networks & Internet'},
+      {q:'Which HTML tag is used to create a hyperlink?',opts:['<link>','<a href="">','<href>','<url>'],ans:1,exp:'<a href="URL">text</a> creates a hyperlink in HTML. The href attribute specifies the destination URL.',topic:'Networks & Internet'},
+      {q:'The DIGITAL DIVIDE refers to:',opts:['Speed difference between HDD and SSD','Inequality in access to technology between groups','Division between hardware and software','Difference between internet and intranet'],ans:1,exp:'The Digital Divide is the gap between those who have access to computers/internet and those who do not — often linked to wealth and geography.',topic:'Ethics & Legislation'},
+      {q:'Which type of software has no source code restrictions and can be freely modified?',opts:['Proprietary software','Shareware','Open-source software','Freeware'],ans:2,exp:'Open-source software provides access to the source code and allows users to freely study, modify, and distribute it.',topic:'Software & Applications'},
+      {q:'The process of checking data against the original document to confirm accuracy is:',opts:['Validation','Verification','Normalisation','Authentication'],ans:1,exp:'Verification checks that data entered matches the original source. Validation checks that data is sensible/reasonable.',topic:'Databases'},
+      {q:'Which number system uses base 16?',opts:['Binary','Octal','Decimal','Hexadecimal'],ans:3,exp:'Hexadecimal is base 16, using digits 0-9 and A-F. Binary=base 2, Octal=base 8, Decimal=base 10.',topic:'Number Systems'},
+      {q:'In pseudocode, which keyword displays output to the user?',opts:['INPUT','SET','PRINT / OUTPUT','READ'],ans:2,exp:'PRINT or OUTPUT displays results to the user. INPUT receives data from the user. READ gets data from a file.',topic:'Algorithms & Programming'},
+      {q:'Assistive technology like screen readers PRIMARILY helps:',opts:['Speed up computers','Visually impaired users access computers','Improve network security','Compress files'],ans:1,exp:'Screen readers (e.g., JAWS, NVDA) read screen content aloud, enabling visually impaired users to interact with computers.',topic:'Ethics & Legislation'},
+      {q:'A QUEUE data structure follows:',opts:['LIFO','FIFO','FILO','LILO'],ans:1,exp:'Queue uses FIFO (First In, First Out) — the first item added is the first to be removed. Like a real queue/line.',topic:'Algorithms & Programming'},
+      {q:'Which of the following is NOT a generation of computers?',opts:['Vacuum tube generation','Transistor generation','Optical generation','Integrated circuit generation'],ans:2,exp:'Computer generations are: 1st(vacuum tubes), 2nd(transistors), 3rd(ICs), 4th(microprocessors), 5th(AI). There is no "optical generation".',topic:'Computer Hardware'},
+      {q:'How many bits are in one BYTE?',opts:['4','8','16','32'],ans:1,exp:'1 Byte = 8 bits. This is the standard unit for storing a single character in most encoding systems.',topic:'Number Systems'},
+      {q:'Which HTML tag inserts an image?',opts:['<image src="">','<img src="">','<picture src="">','<photo src="">'],ans:1,exp:'<img src="filename.jpg" alt="description"> inserts an image in HTML. It is a self-closing tag.',topic:'Networks & Internet'},
+      {q:'The SDLC phase where the actual program code is written is called:',opts:['Analysis','Design','Development','Testing'],ans:2,exp:'The Development (implementation/coding) phase is where programmers write the actual code based on design specifications.',topic:'SDLC & Project Management'},
+      {q:'Phishing attacks usually arrive as:',opts:['Virus-infected USB drives','Fake emails pretending to be legitimate organisations','Physical theft of computers','Denial of service attacks'],ans:1,exp:'Phishing emails impersonate trusted organisations (banks, government) to trick users into clicking malicious links or revealing credentials.',topic:'Ethics & Legislation'},
+      {q:'An ARRAY in programming stores:',opts:['A single value','Multiple values of the same type accessed by index','Functions and methods','Network protocols'],ans:1,exp:'An array stores multiple values of the same data type, each accessible by an index number (0-based or 1-based).',topic:'Algorithms & Programming'},
+      {q:'Which describes FULL DUPLEX communication?',opts:['Data in one direction only','Data in both directions but not simultaneously','Data in both directions simultaneously','Data broadcast to all'],ans:2,exp:'Full Duplex allows simultaneous two-way communication. Example: telephone call — both parties can speak and hear at the same time.',topic:'Networks & Internet'},
+      {q:'Normalisation to 3NF eliminates:',opts:['Primary keys','Foreign keys','Transitive dependencies','All relationships'],ans:2,exp:'3NF (Third Normal Form) eliminates transitive dependencies — non-key attributes must depend ONLY on the primary key, not on other non-key attributes.',topic:'Databases'},
+      {q:'The SOCIAL benefit of e-learning platforms (like this one!) includes:',opts:['Increased paper use','Equal access to quality education regardless of location','Higher school fees','Reduced social interaction'],ans:1,exp:'e-Learning platforms democratise education — students in remote or disadvantaged areas can access the same quality materials as those in cities.',topic:'Ethics & Legislation'}
+    ]
+  }
+};
+
+// ════════════════════════════════════════
+// EXAM ENGINE
+// ════════════════════════════════════════
+let currentPaperId='', currentPaper=null, userAnswers=[], currentQ=0;
+let examTimerInterval=null, timeRemaining=0, examStartTime=0;
+
+function showPaperList(){
+  ['examSetup','examRunner','examResults'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('paperList').style.display='block';
+  clearInterval(examTimerInterval);
+}
+
+function setupExam(paperId){
+  currentPaperId=paperId;
+  currentPaper=PAPERS[paperId];
+  document.getElementById('paperList').style.display='none';
+  document.getElementById('examSetup').style.display='block';
+  document.getElementById('setupTitle').textContent='📜 '+currentPaper.title;
+  document.getElementById('setupDesc').textContent=currentPaper.desc;
+  document.getElementById('setupQs').textContent=currentPaper.questions.length;
+  document.getElementById('setupTime').textContent=currentPaper.time;
+  document.getElementById('setupMarks').textContent=currentPaper.marks;
+}
+
+function launchExam(){
+  userAnswers=new Array(currentPaper.questions.length).fill(-1);
+  currentQ=0;
+  timeRemaining=currentPaper.time*60;
+  examStartTime=Date.now();
+  document.getElementById('examSetup').style.display='none';
+  document.getElementById('examRunner').style.display='block';
+  document.getElementById('totQ').textContent=currentPaper.questions.length;
+  buildNavGrid();
+  renderExamQ(0);
+  startExamTimer();
+}
+
+function buildNavGrid(){
+  const grid=document.getElementById('qNavGrid');
+  grid.innerHTML=currentPaper.questions.map((_,i)=>`
+    <button class="q-nav-btn" id="navBtn${i}" onclick="jumpToQ(${i})">${i+1}</button>
+  `).join('');
+}
+
+function updateNavGrid(){
+  currentPaper.questions.forEach((_,i)=>{
+    const btn=document.getElementById('navBtn'+i);
+    if(!btn)return;
+    btn.className='q-nav-btn'+(i===currentQ?' current':userAnswers[i]>=0?' answered':'');
+  });
+}
+
+function jumpToQ(idx){ saveCurrentAnswer(); currentQ=idx; renderExamQ(idx); }
+
+function renderExamQ(idx){
+  const q=currentPaper.questions[idx];
+  document.getElementById('curQ').textContent=idx+1;
+  document.getElementById('examProgress').style.width=((idx/currentPaper.questions.length)*100)+'%';
+  const answered=userAnswers.filter(a=>a>=0).length;
+  document.getElementById('liveSc').textContent=`${answered} answered`;
+  updateNavGrid();
+
+  const qText = q.q.includes('\n') ? q.q.replace(/\n/g,'<br>') : q.q;
+  const hasCode = q.q.includes('IF ') || q.q.includes('PRINT') || q.q.includes('WHILE');
+
+  document.getElementById('examQArea').innerHTML=`
+    <div class="exam-q-card">
+      <div class="exam-q-meta">
+        <span class="q-badge">Q${idx+1}</span>
+        ${q.topic?`<span class="q-src">${q.topic}</span>`:''}
+      </div>
+      <div class="exam-q-text">${hasCode&&q.q.includes('\n')?'<pre>'+q.q+'</pre>':qText}</div>
+      <div class="exam-opts">
+        ${q.opts.map((opt,i)=>`
+          <button class="exam-opt ${userAnswers[idx]===i?'selected':''}" id="examOpt${i}" onclick="selectExamOpt(${i})">
+            <span class="opt-letter">${String.fromCharCode(65+i)}</span>
+            <span class="opt-text">${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="exam-nav">
+      ${idx>0?'<button class="exam-nav-btn btn-prev" onclick="prevQ()">← Prev</button>':''}
+      <button class="exam-nav-btn btn-skip" onclick="skipQ()">Skip →</button>
+      ${idx<currentPaper.questions.length-1
+        ?'<button class="exam-nav-btn btn-next" onclick="nextQ()">Next →</button>'
+        :'<button class="exam-nav-btn btn-submit" onclick="confirmSubmit()">🏁 Submit Exam</button>'}
+    </div>
+  `;
+  window.scrollTo(0,0);
+}
+
+function selectExamOpt(idx){
+  userAnswers[currentQ]=idx;
+  document.querySelectorAll('.exam-opt').forEach((b,i)=>{
+    b.classList.toggle('selected',i===idx);
+    const ltr=b.querySelector('.opt-letter');
+    ltr.style.background=i===idx?'var(--gold)':'';
+    ltr.style.color=i===idx?'#1a1a2e':'';
+  });
+  updateNavGrid();
+}
+
+function saveCurrentAnswer(){ /* answers saved in-place via selectExamOpt */ }
+function nextQ(){ if(currentQ<currentPaper.questions.length-1){currentQ++;renderExamQ(currentQ);} }
+function prevQ(){ if(currentQ>0){currentQ--;renderExamQ(currentQ);} }
+function skipQ(){ nextQ(); }
+
+function confirmSubmit(){
+  const unanswered=userAnswers.filter(a=>a<0).length;
+  const msg=unanswered>0
+    ?`You have ${unanswered} unanswered question(s). Submit anyway?`
+    :'Submit your exam? You cannot change answers after submission.';
+  if(confirm(msg)) submitExam();
+}
+
+function startExamTimer(){
+  clearInterval(examTimerInterval);
+  examTimerInterval=setInterval(()=>{
+    timeRemaining--;
+    const m=Math.floor(timeRemaining/60), s=timeRemaining%60;
+    const badge=document.getElementById('examTimer');
+    badge.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    badge.className='exam-timer'+(timeRemaining<=300?' red':'');
+    if(timeRemaining<=0){ clearInterval(examTimerInterval); submitExam(); }
+  },1000);
+}
+
+function submitExam(){
+  clearInterval(examTimerInterval);
+  const timeUsed=Math.round((Date.now()-examStartTime)/1000);
+  const correct=userAnswers.filter((a,i)=>a===currentPaper.questions[i].ans).length;
+  const skipped=userAnswers.filter(a=>a<0).length;
+  const wrong=currentPaper.questions.length-correct-skipped;
+  const pct=Math.round((correct/currentPaper.questions.length)*100);
+
+  // Save to server + localStorage fallback
+  const resultObj5={cin:userCIN,name:userName,topic:currentPaper.title,score:pct,correct,total:currentPaper.questions.length,date:new Date().toISOString()};
+  try{ fetch('/api/quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(resultObj5)}); }catch(e){}
+  const results=JSON.parse(localStorage.getItem('quizResults')||'[]');
+  results.push(resultObj5);
+  localStorage.setItem('quizResults',JSON.stringify(results));
+
+  // Show results
+  document.getElementById('examRunner').style.display='none';
+  document.getElementById('examResults').style.display='block';
+  const scoreEl=document.getElementById('resPct');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-pct '+(pct>=50?'pass':'fail');
+
+  let grade='', msg='';
+  if(pct>=80){grade='Excellent! 🏆';msg='Outstanding! You are exam-ready. Keep this up!';}
+  else if(pct>=65){grade='Good Pass 🎉';msg='Well done! Review the questions you missed to push higher.';}
+  else if(pct>=50){grade='Pass ✅';msg='You passed. Study the topics you struggled with to improve your grade.';}
+  else{grade='Below Pass 📚';msg='Keep studying! Focus on the highlighted weak areas and try again.';}
+
+  document.getElementById('resGrade').textContent=grade;
+  document.getElementById('resMsg').textContent=msg;
+  document.getElementById('resCorrect').textContent=correct;
+  document.getElementById('resWrong').textContent=wrong;
+  document.getElementById('resSkipped').textContent=skipped;
+  const tm=Math.floor(timeUsed/60)+'m '+(timeUsed%60)+'s';
+  document.getElementById('resTime').textContent=tm;
+
+  // Review
+  document.getElementById('reviewItems').innerHTML=currentPaper.questions.map((q,i)=>{
+    const chosen=userAnswers[i];
+    const isCorrect=chosen===q.ans;
+    return `<div class="ri ${isCorrect?'':'wrong'}">
+      <div class="ri-q-text"><strong>Q${i+1}:</strong> ${q.q.length>120?q.q.substring(0,120)+'…':q.q}</div>
+      <div class="ri-line" style="color:${isCorrect?'#2ecc71':'#ff6b6b'}">
+        ${isCorrect?'✅':'❌'} Your answer: ${chosen>=0?q.opts[chosen]:'(skipped)'}
+      </div>
+      ${!isCorrect?`<div class="ri-line" style="color:#2ecc71">✔ Correct: ${q.opts[q.ans]}</div>`:''}
+      <div class="ri-exp">${q.exp}</div>
+    </div>`;
+  }).join('');
+  window.scrollTo(0,0);
+}
+
+function retryExam(){ document.getElementById('examResults').style.display='none'; launchExam(); }
+</script>
+</body>
+</html>

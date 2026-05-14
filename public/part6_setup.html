@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup Guide – GHS Mbonjo CS e-Learning</title>
+<style>
+:root{--green:#006633;--gold:#FFD700;--dark:#1a1a2e;--card:#16213e;--text:#e0e0e0;--white:#fff;--radius:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+.topbar{background:linear-gradient(135deg,var(--green),#004d26);border-bottom:3px solid var(--gold);padding:12px 20px;display:flex;align-items:center;gap:12px;}
+.topbar h1{font-size:16px;font-weight:800;color:var(--white);}
+.topbar span{color:var(--gold);}
+.container{max-width:860px;margin:0 auto;padding:24px 16px;}
+h2{color:var(--gold);font-size:18px;font-weight:800;margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid rgba(255,215,0,0.15);}
+h3{color:#7ec8e3;font-size:15px;font-weight:700;margin:18px 0 8px;}
+p{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.7;margin-bottom:10px;}
+ul,ol{padding-left:20px;margin-bottom:12px;}
+li{font-size:14px;color:rgba(255,255,255,0.75);margin-bottom:6px;line-height:1.6;}
+strong{color:var(--gold);}
+code{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:4px;padding:2px 7px;font-family:'Courier New',monospace;font-size:13px;color:var(--gold);}
+.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.07);}
+.card.gold{border-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.05);}
+.card.green{border-color:rgba(0,200,80,0.2);background:rgba(0,200,80,0.05);}
+.card.red{border-color:rgba(231,76,60,0.2);background:rgba(231,76,60,0.05);}
+.file-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:20px;}
+.file-card{background:var(--card);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.07);}
+.file-card .fname{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px;}
+.file-card .fdesc{font-size:12px;color:rgba(255,255,255,0.5);}
+.cred-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+.cred-table th{background:rgba(255,215,0,0.12);color:var(--gold);padding:10px 14px;text-align:left;}
+.cred-table td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);}
+.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.step-num{background:linear-gradient(135deg,var(--gold),#e6c200);color:#1a1a2e;font-weight:900;font-size:14px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-body{flex:1;}
+.step-body strong{color:var(--white);font-size:14px;display:block;margin-bottom:3px;}
+.step-body p{margin:0;font-size:13px;color:rgba(255,255,255,0.6);}
+.badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;}
+.badge.green{background:rgba(46,204,113,0.2);color:#2ecc71;}
+.badge.blue{background:rgba(52,152,219,0.2);color:#3498db;}
+.badge.orange{background:rgba(255,165,0,0.2);color:orange;}
+.note-box{background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.25);border-radius:8px;padding:12px 16px;margin:10px 0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+.warn-box{background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.25);border-radius:8px;padding:12px 16px;margin:10px 0;font-size:13px;color:rgba(255,165,0,0.9);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div>
+    <h1>GHS Mbonjo Limbe – CS e-Learning Platform &nbsp;·&nbsp; <span>Setup & Deployment Guide</span></h1>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card gold" style="margin-top:0">
+    <h3 style="margin-top:0">🎉 Platform Complete!</h3>
+    <p>Your Computer Science e-Learning platform for <strong>Government High School Mbonjo Limbe – Form 5</strong> is ready to deploy. This guide explains everything you need to know to host and use it.</p>
+  </div>
+
+  <!-- FILES -->
+  <h2>📁 Platform Files (6 Parts)</h2>
+  <p>All 6 files must be in the <strong>same folder</strong> — they link to each other by filename.</p>
+  <div class="file-grid">
+    <div class="file-card">
+      <div class="fname">part1_index.html</div>
+      <div class="fdesc">🏠 Landing page with logos, class selection (Form 5 / Upper Sixth), and CIN login system. <span class="badge green">START HERE</span></div>
+    </div>
+    <div class="file-card">
+      <div class="fname">part2_platform.html</div>
+      <div class="fdesc">📚 Main student dashboard — 4 modules of notes, navigation sidebar, topic cards. Full curriculum content.</div>
+    </div>
+    <div class="file-card">
+      <div class="fname">part3_quiz.html</div>
+      <div class="fdesc">✅ MCQ Quiz engine — 150+ questions, 10 topics, timed quizzes, instant grading with explanations.</div>
+    </div>
+    <div class="file-card">
+      <div class="fname">part4_structured.html</div>
+      <div class="fdesc">📄 Paper 2 structured questions with model answers, marking guides, and admin grading panel.</div>
+    </div>
+    <div class="file-card">
+      <div class="fname">part5_mockpapers.html</div>
+      <div class="fdesc">📜 Full mock exam simulator — SW Mock 2026, Centre 2019, HIHS 2024, Mixed 2025. Timed exam mode.</div>
+    </div>
+    <div class="file-card">
+      <div class="fname">part6_setup.html</div>
+      <div class="fdesc">📖 This file — setup instructions, admin credentials, student list, and deployment guide.</div>
+    </div>
+  </div>
+
+  <!-- DEPLOYMENT -->
+  <h2>🚀 How to Deploy / Host the Platform</h2>
+
+  <h3>Option A: Free Online Hosting (Recommended for school use)</h3>
+  <div class="card">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Create a free GitHub account</strong><p>Go to <code>github.com</code> and sign up for a free account.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Create a new repository</strong><p>Click "New Repository", name it <code>ghsmbonjo-cs</code>, set it to Public, click Create.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Upload all 6 HTML files</strong><p>Click "Upload files", drag and drop all 6 part*.html files, then click "Commit changes".</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Enable GitHub Pages</strong><p>Go to Settings → Pages → Source: Deploy from branch → main → root. Click Save.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Rename part1_index.html to index.html</strong><p>Rename the file to <code>index.html</code> before uploading so it becomes the default page.</p></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Share the URL</strong><p>Your site will be at: <code>https://[yourusername].github.io/ghsmbonjo-cs/</code> — share this with students!</p></div></div>
+  </div>
+
+  <h3>Option B: Run Locally (No internet needed)</h3>
+  <div class="card">
+    <p>Simply put all 6 HTML files in ONE folder on a computer or flash drive. Open <code>part1_index.html</code> in any web browser (Chrome, Firefox, Edge). No installation needed.</p>
+    <div class="warn-box">⚠️ For local use, student scores/logs are saved in the browser's local storage. They will be cleared if the browser data is cleared. For persistent records, use GitHub Pages.</div>
+  </div>
+
+  <h3>Option C: Free Hosting on Netlify</h3>
+  <div class="card">
+    <p>Go to <code>netlify.com</code> → Sign up free → Drag and drop your folder of HTML files → Netlify instantly gives you a live URL. Fast and simple.</p>
+  </div>
+
+  <!-- ACCESS CREDENTIALS -->
+  <h2>🔐 Login Credentials</h2>
+
+  <h3>Admin Access</h3>
+  <div class="card gold">
+    <table class="cred-table">
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>CIN (enter in login box)</td><td><strong>ADMIN2026</strong></td></tr>
+      <tr><td>What it unlocks</td><td>Admin Dashboard — access logs, quiz results, student lookup, grade structured questions, export CSV</td></tr>
+    </table>
+    <div class="warn-box">🔒 Keep this CIN private. Only share with the teacher/administrator. Change it by editing <code>part1_index.html</code> — search for <code>ADMIN2026</code>.</div>
+  </div>
+
+  <h3>Student Access — Form 5 (52 students)</h3>
+  <div class="card">
+    <p>Students enter their <strong>C.I.N number</strong> to log in. Their name appears automatically. All 52 students are registered:</p>
+    <table class="cred-table">
+      <tr><th>CIN</th><th>Name</th></tr>
+      <tr><td>116285040</td><td>ABIA LORDINHO LEE</td></tr>
+      <tr><td>116285033</td><td>ACHARA RISA EMAKUN</td></tr>
+      <tr><td>116285090</td><td>AFUH CARINE NGUM</td></tr>
+      <tr><td>116285048</td><td>AJEDMO NAMI SYLVIE INGEE</td></tr>
+      <tr><td>116285088</td><td>AKWO DAMARIS EMMA</td></tr>
+      <tr><td>116285076</td><td>ANCHI NADINE ANJA</td></tr>
+      <tr><td>116285051</td><td>ANDINE JOSOPHINE BABILA</td></tr>
+      <tr><td>116285001</td><td>ASONGATABONG MBIANDJI DIEUDONNE EBI</td></tr>
+      <tr><td>116285049</td><td>ASSAH RUDOFF KEKUMI</td></tr>
+      <tr><td>116285046</td><td>AVUMBOM FAVOUR</td></tr>
+      <tr><td>116285026</td><td>AWAH MIGUEL PRECIOUS WOTOH</td></tr>
+      <tr><td>116285056</td><td>AYUK EGBE STACY</td></tr>
+      <tr><td>116285027</td><td>AZONG ACHAH OCHAL</td></tr>
+      <tr><td>116285019</td><td>BANDJEM MKWESLEY TONIAN</td></tr>
+      <tr><td>116285065</td><td>BERN LEAH NDUM</td></tr>
+      <tr><td>116285061</td><td>CHEFOR BRIGHTNEY NGONGEH</td></tr>
+      <tr><td>116285062</td><td>CHEFOR BURNSLEY FO'O-ZO</td></tr>
+      <tr><td>116285050</td><td>CHIA RIHANNA MADAH SIH</td></tr>
+      <tr><td>116285064</td><td>CLAUDINE SHIWOME</td></tr>
+      <tr><td>116285099</td><td>DAVID AKEM DISONGE</td></tr>
+      <tr><td>116285007</td><td>EBANI BLAISE ESOE</td></tr>
+      <tr><td>116285098</td><td>EBOA STEPHEN BALIKI</td></tr>
+      <tr><td>116285073</td><td>ELUM FAVOUR OZEN</td></tr>
+      <tr><td>116285038</td><td>ESUKWE KERA BOSEMEH</td></tr>
+      <tr><td>116285020</td><td>FOKOH CLARIS CLEAR</td></tr>
+      <tr><td>116285085</td><td>GINAH MIKERA AFOR</td></tr>
+      <tr><td>116285023</td><td>KUM NELLY-BRIGHT BENG</td></tr>
+      <tr><td>116285103</td><td>LAROMI CARINE GORROTI</td></tr>
+      <tr><td>116285079</td><td>LEKEAKA EMMANUELA ATEHNJU</td></tr>
+      <tr><td>116285089</td><td>LUM LIZETTE</td></tr>
+      <tr><td>116285002</td><td>MBAH ASHELY ENGOH</td></tr>
+      <tr><td>116285066</td><td>MBUBI CLERIJOYCE PANGMEH</td></tr>
+      <tr><td>116285013</td><td>MENSEH CHEALSE NAMON</td></tr>
+      <tr><td>116285036</td><td>MOKOLI PENIEL NYAMA</td></tr>
+      <tr><td>116285052</td><td>NAMINA GLORY MALIKE</td></tr>
+      <tr><td>116285008</td><td>NDITAH ALEXIM TAMENJOH</td></tr>
+      <tr><td>116285022</td><td>NDO VANESSA ONYA</td></tr>
+      <tr><td>116285075</td><td>NEWEH TREVORE NGELON</td></tr>
+      <tr><td>116285015</td><td>NGOMBA SALOME</td></tr>
+      <tr><td>116285016</td><td>NGUFOR BERLINE FLORE TAMETA</td></tr>
+      <tr><td>116285035</td><td>NGULEFAC DAVID ATEAWUNG</td></tr>
+      <tr><td>116285009</td><td>NGWA PASCAL NJENJI</td></tr>
+      <tr><td>116285068</td><td>NGWESSE ROWLLINGS DIABE</td></tr>
+      <tr><td>116285031</td><td>NKWENYI VICTORY NSANNEH</td></tr>
+      <tr><td>116285094</td><td>NOTO CHRISTIANA NYAMA</td></tr>
+      <tr><td>116285014</td><td>NTOUBE SIANA MAROLE</td></tr>
+      <tr><td>116285010</td><td>NYAME FAVOUR DIONE</td></tr>
+      <tr><td>116285012</td><td>PEWAKE GODWILL WOPENASE</td></tr>
+      <tr><td>116285072</td><td>ROBERT BETOTO MUDIKA</td></tr>
+      <tr><td>116285032</td><td>SAMA ALCASIM FIAGMENYI</td></tr>
+      <tr><td>116285058</td><td>TAMPA DANIEL TABU</td></tr>
+      <tr><td>116285110</td><td>VICTOR-BLOSSOM MAKAINLY</td></tr>
+      <tr><td>116285000</td><td>VELUYEN</td></tr>
+    </table>
+  </div>
+
+  <!-- FEATURES -->
+  <h2>✅ Platform Features Summary</h2>
+  <div class="card green">
+    <ul>
+      <li>🏠 <strong>Landing Page</strong> — Republic of Cameroon logos, school name, motto, Form 5 / Upper Sixth ("Coming Soon") cards</li>
+      <li>🔐 <strong>CIN-based Login</strong> — students enter CIN number; their full name loads automatically; invalid CINs rejected</li>
+      <li>📚 <strong>4 Study Modules</strong> — Module I (Information Systems), II (Technology & Society), III (Software Development), IV (Networks & Hardware) — full notes with tables, definitions, examples</li>
+      <li>✅ <strong>MCQ Quiz Engine</strong> — 150+ questions across 10 topics; timed; instant grading; detailed explanations for every answer; wrong-answer analysis</li>
+      <li>📜 <strong>Mock Exam Simulator</strong> — 4 full mock papers (SW 2026, Centre 2019, HIHS 2024, Mixed 2025); 90-minute timed exam mode; question navigator; full review at end</li>
+      <li>📄 <strong>Structured Questions (Paper 2)</strong> — 5 questions with multiple parts; model answers and marking guides; teacher grading interface</li>
+      <li>🔧 <strong>Admin Dashboard</strong> — login with ADMIN2026; view all student logins, session durations, quiz scores; student lookup; export CSV</li>
+      <li>📱 <strong>Mobile-First Design</strong> — fully responsive for phones; large touch targets; readable on small screens</li>
+      <li>🔒 <strong>Copy & Print Protection</strong> — right-click disabled; Ctrl+C/P/S/U blocked; print mode hides content; DevTools blocked</li>
+      <li>🌙 <strong>Dark Theme</strong> — professional dark green and gold design inspired by Cameroon flag colours</li>
+    </ul>
+  </div>
+
+  <!-- ADMIN GUIDE -->
+  <h2>🔧 Admin Usage Guide</h2>
+  <div class="card">
+    <h3>How to access the Admin Dashboard</h3>
+    <ol>
+      <li>Open <code>part1_index.html</code> (or the hosted URL)</li>
+      <li>Click <strong>"Enter Platform"</strong> on the Form 5 card</li>
+      <li>Enter CIN: <code>ADMIN2026</code></li>
+      <li>You are logged in as Administrator</li>
+      <li>In the sidebar, click <strong>"Admin Dashboard"</strong></li>
+      <li>Alternatively, open <code>part4_structured.html</code> — the Admin tab is visible when logged in as admin</li>
+    </ol>
+    <h3>What you can see in the Admin Dashboard</h3>
+    <ul>
+      <li><strong>Stats:</strong> Total unique students, total logins, average session time, quizzes taken, passes</li>
+      <li><strong>Student Lookup:</strong> Search any student by name or CIN — see their login count, total time, quiz average</li>
+      <li><strong>Login History:</strong> Last 50 logins with CIN, name, date/time, and session duration</li>
+      <li><strong>Quiz Results:</strong> All quiz attempts with student name, topic, score, and date</li>
+      <li><strong>Export CSV:</strong> Download all quiz results as a CSV spreadsheet for your records</li>
+      <li><strong>Grade Paper 2:</strong> In part4_structured.html, click "Grade" next to each part to enter student marks</li>
+    </ul>
+  </div>
+
+  <!-- CUSTOMISATION -->
+  <h2>✏️ How to Add/Edit Content</h2>
+  <div class="card">
+    <h3>Add a new student</h3>
+    <p>Open <code>part1_index.html</code> in a text editor (Notepad++, VS Code). Find the <code>const STUDENTS = {</code> section. Add a new line:</p>
+    <p><code>"116285XXX": "NEW STUDENT NAME",</code></p>
+    <p>Do the same in <code>part2_platform.html</code>, <code>part4_structured.html</code>, and <code>part5_mockpapers.html</code>.</p>
+
+    <h3>Add new quiz questions</h3>
+    <p>Open <code>part3_quiz.html</code>. Find <code>const ALL_QUESTIONS = [</code>. Add a new question object:</p>
+    <p><code>{id:200, topic:'Computer Hardware', source:'Your Source', q:'Question text?', opts:['A. Option','B. Option','C. Option','D. Option'], ans:0, exp:'Explanation here.', wrong:{'B':'Why B is wrong','C':'Why C is wrong','D':'Why D is wrong'}}</code></p>
+
+    <h3>Change the admin password (CIN)</h3>
+    <p>In <code>part1_index.html</code>, find <code>const ADMIN_CIN = "ADMIN2026"</code> and change the value. Update the same in all other part files.</p>
+
+    <h3>Add a new mock paper</h3>
+    <p>Open <code>part5_mockpapers.html</code>. In the <code>const PAPERS = {</code> section, add a new paper following the same structure as existing ones.</p>
+  </div>
+
+  <!-- TROUBLESHOOTING -->
+  <h2>🛠️ Troubleshooting</h2>
+  <div class="card">
+    <h3>Student can't login</h3>
+    <p>Check that they are entering their CIN correctly (numbers only, no spaces). Verify the CIN is in the STUDENTS list in part1_index.html.</p>
+
+    <h3>Admin dashboard shows no data</h3>
+    <p>Data is stored in the browser's localStorage. Students must log in from the SAME browser on the SAME device for data to accumulate. For shared tracking, consider hosting online.</p>
+
+    <h3>Files not linking to each other</h3>
+    <p>All 6 HTML files MUST be in the same folder. The filenames must match exactly: <code>part1_index.html</code>, <code>part2_platform.html</code>, etc.</p>
+
+    <h3>Platform looks broken on very old phones</h3>
+    <p>The platform requires a modern browser (Chrome 60+, Firefox 55+, Safari 11+). Update the browser if needed.</p>
+  </div>
+
+  <div class="card gold" style="text-align:center;margin-top:24px">
+    <p style="font-size:15px;font-weight:700;color:var(--gold)">🎓 GHS Mbonjo Limbe – Department of Computer Science</p>
+    <p style="font-size:13px;color:rgba(255,255,255,0.6)">e-Learning Platform · Academic Year 2025–2026 · Form 5 Computer Science 0595</p>
+    <p style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px">Built with notes, mock papers, and student data provided by the department</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHS Mbonjo – CS Platform | Form 5</title>
+<style>
+* { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+@media print { body { display:none !important; } }
+input, textarea { -webkit-user-select:text; user-select:text; }
+
+:root {
+  --green:#006633; --gold:#FFD700; --dark:#1a1a2e; --card:#16213e;
+  --accent:#0f3460; --text:#e0e0e0; --white:#fff; --red:#e74c3c;
+  --blue:#3498db; --radius:12px; --sidebar:260px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',Tahoma,sans-serif; background:var(--dark); color:var(--text); min-height:100vh; }
+
+/* TOP BAR */
+.topbar {
+  background:linear-gradient(135deg,var(--green),#004d26);
+  border-bottom:3px solid var(--gold);
+  padding:10px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
+  box-shadow:0 2px 12px rgba(0,0,0,0.5);
+}
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.hamburger { background:none; border:none; color:var(--gold); font-size:22px; cursor:pointer; padding:4px 8px; border-radius:6px; }
+.hamburger:hover { background:rgba(255,215,0,0.1); }
+.topbar-title { font-size:14px; font-weight:700; color:var(--white); }
+.topbar-title span { color:var(--gold); }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.user-badge {
+  background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.3);
+  border-radius:20px; padding:6px 12px;
+  font-size:12px; color:var(--gold); font-weight:600;
+  max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.logout-btn {
+  background:rgba(231,76,60,0.2); border:1px solid rgba(231,76,60,0.4);
+  color:#ff6b6b; padding:6px 12px; border-radius:20px;
+  font-size:12px; cursor:pointer; font-weight:600;
+  transition:all 0.2s;
+}
+.logout-btn:hover { background:rgba(231,76,60,0.4); }
+
+/* LAYOUT */
+.layout { display:flex; min-height:calc(100vh - 55px); }
+
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar); background:var(--card);
+  border-right:1px solid rgba(255,215,0,0.1);
+  overflow-y:auto; transition:transform 0.3s ease;
+  position:fixed; top:55px; bottom:0; left:0; z-index:150;
+}
+.sidebar.hidden { transform:translateX(-100%); }
+
+.sidebar-section { padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.sidebar-section-title {
+  padding:8px 16px;
+  font-size:10px; text-transform:uppercase; letter-spacing:1.5px;
+  color:rgba(255,215,0,0.6); font-weight:700;
+}
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  cursor:pointer; font-size:13px;
+  transition:all 0.2s;
+  border-left:3px solid transparent;
+}
+.sidebar-item:hover { background:rgba(255,215,0,0.06); border-left-color:rgba(255,215,0,0.3); }
+.sidebar-item.active { background:rgba(255,215,0,0.1); border-left-color:var(--gold); color:var(--gold); }
+.sidebar-item .ico { font-size:16px; width:20px; text-align:center; }
+.sidebar-item .lbl { flex:1; line-height:1.3; }
+.sidebar-item .badge {
+  background:rgba(255,215,0,0.2); color:var(--gold);
+  font-size:10px; padding:2px 7px; border-radius:10px; font-weight:700;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex:1;
+  margin-left:var(--sidebar);
+  transition:margin-left 0.3s ease;
+  min-height:calc(100vh - 55px);
+  overflow-y:auto;
+}
+.main.full { margin-left:0; }
+
+/* PAGE */
+.page { display:none; padding:20px; animation:fadeIn 0.3s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* WELCOME DASHBOARD */
+.welcome-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px; margin-bottom:24px;
+}
+.stat-card {
+  background:var(--card); border-radius:var(--radius);
+  padding:20px 16px; text-align:center;
+  border:1px solid rgba(255,215,0,0.1);
+  transition:transform 0.2s;
+}
+.stat-card:hover { transform:translateY(-3px); }
+.stat-card .ico { font-size:32px; margin-bottom:8px; display:block; }
+.stat-card .num { font-size:28px; font-weight:800; color:var(--gold); }
+.stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1px; }
+
+.welcome-msg {
+  background:linear-gradient(135deg,rgba(0,102,51,0.3),rgba(15,52,96,0.3));
+  border:1px solid rgba(255,215,0,0.2); border-radius:var(--radius);
+  padding:20px; margin-bottom:24px;
+}
+.welcome-msg h2 { color:var(--gold); font-size:20px; margin-bottom:6px; }
+.welcome-msg p { color:rgba(255,255,255,0.7); font-size:14px; line-height:1.6; }
+
+/* TOPIC CARDS */
+.section-header { margin-bottom:16px; }
+.section-header h2 { font-size:18px; color:var(--gold); font-weight:700; }
+.section-header p { font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; }
+
+.topics-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px; margin-bottom:30px;
+}
+.topic-card {
+  background:var(--card); border-radius:var(--radius);
+  border:1px solid rgba(255,255,255,0.07);
+  overflow:hidden; cursor:pointer;
+  transition:all 0.3s; box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.topic-card:hover { transform:translateY(-4px); border-color:rgba(255,215,0,0.3); box-shadow:0 8px 24px rgba(255,215,0,0.1); }
+.topic-card-header {
+  padding:14px 16px;
+  display:flex; align-items:center; gap:12px;
+}
+.topic-icon { font-size:28px; }
+.topic-card-header h3 { font-size:14px; font-weight:700; color:var(--white); line-height:1.3; }
+.topic-card-header .term { font-size:10px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+.topic-card-body { padding:0 16px 14px; }
+.topic-card-body p { font-size:12px; color:rgba(255,255,255,0.5); line-height:1.5; }
+.topic-card-footer {
+  padding:10px 16px;
+  background:rgba(255,255,255,0.03);
+  border-top:1px solid rgba(255,255,255,0.05);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.topic-card-footer .lessons { font-size:11px; color:rgba(255,255,255,0.4); }
+.topic-card-footer .go-btn {
+  background:linear-gradient(135deg,var(--gold),#e6c200);
+  color:#1a1a2e; border:none; padding:5px 14px;
+  border-radius:12px; font-size:11px; font-weight:700;
+  cursor:pointer; transition:transform 0.2s;
+}
+.topic-card-footer .go-btn:hover { transform:scale(1.05); }
+
+/* CONTENT VIEW */
+.content-breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:16px; font-size:13px; color:rgba(255,255,255,0.5);
+}
+.breadcrumb-back {
+  background:rgba(255,215,0,0.1); border:1px solid rgba(255,215,0,0.2);
+  color:var(--gold); padding:6px 14px; border-radius:20px;
+  font-size:12px; cursor:pointer; font-weight:600;
+  transition:all 0.2s;
+}
+.breadcrumb-back:hover { background:rgba(255,215,0,0.2); }
+
+.lesson-content {
+  background:var(--card); border-radius:var(--radius);
+  padding:24px; border:1px solid rgba(255,255,255,0.07);
+  line-height:1.8;
+}
+.lesson-content h1 { color:var(--gold); font-size:22px; margin-bottom:16px; border-bottom:2px solid rgba(255,215,0,0.2); padding-bottom:12px; }
+.lesson-content h2 { color:var(--gold); font-size:17px; margin:20px 0 10px; }
+.lesson-content h3 { color:#7ec8e3; font-size:15px; margin:16px 0 8px; }
+.lesson-content p { color:rgba(255,255,255,0.8); margin-bottom:12px; font-size:14px; }
+.lesson-content ul, .lesson-content ol { padding-left:20px; margin-bottom:12px; }
+.lesson-content li { color:rgba(255,255,255,0.75); font-size:14px; margin-bottom:6px; }
+.lesson-content strong { color:var(--gold); }
+.lesson-content em { color:#7ec8e3; font-style:italic; }
+.info-box {
+  background:rgba(52,152,219,0.1); border:1px solid rgba(52,152,219,0.3);
+  border-radius:8px; padding:14px 16px; margin:14px 0;
+}
+.info-box.warn { background:rgba(255,165,0,0.1); border-color:rgba(255,165,0,0.3); }
+.info-box.success { background:rgba(0,102,51,0.2); border-color:rgba(0,255,100,0.2); }
+.def-box {
+  background:rgba(255,215,0,0.07); border-left:4px solid var(--gold);
+  border-radius:0 8px 8px 0; padding:12px 16px; margin:12px 0;
+  font-size:14px; color:rgba(255,255,255,0.8);
+}
+.table-wrap { overflow-x:auto; margin:14px 0; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:rgba(255,215,0,0.15); color:var(--gold); padding:10px 12px; text-align:left; border:1px solid rgba(255,255,255,0.1); }
+td { padding:9px 12px; border:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.75); }
+tr:nth-child(even) td { background:rgba(255,255,255,0.03); }
+
+/* LESSON TABS */
+.lesson-list { margin-bottom:20px; }
+.lesson-btn {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px; background:var(--card);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:8px; margin-bottom:8px;
+  cursor:pointer; transition:all 0.2s; width:100%;
+  text-align:left;
+}
+.lesson-btn:hover { border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.05); }
+.lesson-btn .lesson-num {
+  background:rgba(255,215,0,0.15); color:var(--gold);
+  font-size:11px; font-weight:700; padding:3px 8px;
+  border-radius:10px; min-width:32px; text-align:center;
+}
+.lesson-btn .lesson-name { font-size:13px; color:var(--text); flex:1; }
+.lesson-btn .lesson-type {
+  font-size:10px; color:rgba(255,255,255,0.3);
+  text-transform:uppercase; letter-spacing:1px;
+}
+
+/* FOOTER BAR */
+.content-footer {
+  display:flex; justify-content:space-between; gap:10px;
+  margin-top:20px; flex-wrap:wrap;
+}
+.nav-btn {
+  flex:1; min-width:120px; padding:12px;
+  border:none; border-radius:8px; cursor:pointer;
+  font-size:13px; font-weight:700; transition:all 0.2s;
+}
+.nav-btn.prev { background:rgba(255,255,255,0.08); color:var(--text); }
+.nav-btn.next { background:linear-gradient(135deg,var(--gold),#e6c200); color:#1a1a2e; }
+.nav-btn:hover { transform:translateY(-2px); }
+
+/* RESPONSIVE */
+@media (max-width:640px) {
+  :root { --sidebar:240px; }
+  .sidebar { transform:translateX(-100%); }
+  .sidebar.open { transform:translateX(0); }
+  .main { margin-left:0; }
+  .sidebar-overlay {
+    display:none; position:fixed; top:0; left:0;
+    width:100%; height:100%; background:rgba(0,0,0,0.7);
+    z-index:140;
+  }
+  .sidebar-overlay.show { display:block; }
+  .page { padding:14px; }
+  .topics-grid { grid-template-columns:1fr; }
+  .welcome-grid { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-title">CS e-Learning &nbsp;·&nbsp; <span>Form 5</span></div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-badge" id="userBadge">👤 Student</div>
+    <button class="logout-btn" onclick="doLogout()">⏻ Exit</button>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">📋 Menu</div>
+      <div class="sidebar-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+        <span class="ico">🏠</span><span class="lbl">Dashboard</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">📚 Study Notes</div>
+      <div class="sidebar-item" onclick="showPage('module1')" id="nav-module1">
+        <span class="ico">🖥️</span><span class="lbl">Module I: Info Systems &amp; Data</span><span class="badge">T1</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('module2')" id="nav-module2">
+        <span class="ico">👥</span><span class="lbl">Module II: Technology &amp; Society</span><span class="badge">T2</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('module3')" id="nav-module3">
+        <span class="ico">⌨️</span><span class="lbl">Module III: Software Dev</span><span class="badge">T3</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('module4')" id="nav-module4">
+        <span class="ico">🌐</span><span class="lbl">Module IV: Networks &amp; Web</span><span class="badge">T4</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">📝 Revision</div>
+      <div class="sidebar-item" onclick="window.location.href='part5_mockpapers.html'" id="nav-quiz-mcq">
+        <span class="ico">✅</span><span class="lbl">MCQ Practice (Paper 1)</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('quiz-structured')" id="nav-quiz-structured">
+        <span class="ico">📄</span><span class="lbl">Structured Questions (P2)</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('past-papers')" id="nav-past-papers">
+        <span class="ico">📜</span><span class="lbl">Past &amp; Mock Papers</span>
+      </div>
+      <div class="sidebar-item" onclick="window.location.href='part7_hihs2024.html'" id="nav-hihs2024">
+        <span class="ico">📋</span><span class="lbl">HIHS 2024 Full Paper</span><span class="badge">50Q</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="adminNav" style="display:none">
+      <div class="sidebar-section-title">🔧 Admin</div>
+      <div class="sidebar-item" onclick="showPage('admin')" id="nav-admin">
+        <span class="ico">📊</span><span class="lbl">Admin Dashboard</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="welcome-msg">
+        <h2 id="welcomeName">Welcome! 👋</h2>
+        <p>Access your Computer Science Form 5 study materials below. Work through the modules in order, then test yourself in the Revision section. Good luck!</p>
+      </div>
+      <div class="welcome-grid">
+        <div class="stat-card"><span class="ico">📚</span><div class="num">4</div><div class="lbl">Modules</div></div>
+        <div class="stat-card"><span class="ico">📖</span><div class="num">90</div><div class="lbl">Lessons</div></div>
+        <div class="stat-card"><span class="ico">✅</span><div class="num">200+</div><div class="lbl">MCQ Questions</div></div>
+        <div class="stat-card"><span class="ico">📜</span><div class="num">8</div><div class="lbl">Mock Papers</div></div>
+      </div>
+
+      <div class="section-header"><h2>📚 Curriculum Modules</h2><p>Based on the National Progression Sheet for Form 5</p></div>
+      <div class="topics-grid">
+        <div class="topic-card" onclick="showPage('module1')">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(0,102,51,0.4),rgba(0,102,51,0.1))">
+            <span class="topic-icon">🖥️</span>
+            <div><h3>Module I: Information System &amp; Data Resource Management</h3><div class="term">First &amp; Second Term</div></div>
+          </div>
+          <div class="topic-card-body"><p>Information systems, SDLC, Databases, Data capture, modelling &amp; simulation, project management.</p></div>
+          <div class="topic-card-footer"><span class="lessons">📖 35 Lessons</span><button class="go-btn">Study →</button></div>
+        </div>
+        <div class="topic-card" onclick="showPage('module2')">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(52,152,219,0.4),rgba(52,152,219,0.1))">
+            <span class="topic-icon">👥</span>
+            <div><h3>Module II: Technology &amp; Society</h3><div class="term">Second Term</div></div>
+          </div>
+          <div class="topic-card-body"><p>Careers in IT, computer health hazards, ergonomics, social &amp; economic impacts, computer ethics &amp; legislation.</p></div>
+          <div class="topic-card-footer"><span class="lessons">📖 20 Lessons</span><button class="go-btn">Study →</button></div>
+        </div>
+        <div class="topic-card" onclick="showPage('module3')">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(155,89,182,0.4),rgba(155,89,182,0.1))">
+            <span class="topic-icon">⌨️</span>
+            <div><h3>Module III: Software Development</h3><div class="term">First &amp; Third Term</div></div>
+          </div>
+          <div class="topic-card-body"><p>Algorithms, programming paradigms, pseudocode, flowcharts, programming in C, data types &amp; structures.</p></div>
+          <div class="topic-card-footer"><span class="lessons">📖 25 Lessons</span><button class="go-btn">Study →</button></div>
+        </div>
+        <div class="topic-card" onclick="showPage('module4')">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(231,76,60,0.4),rgba(231,76,60,0.1))">
+            <span class="topic-icon">🌐</span>
+            <div><h3>Module IV: Networks, Web &amp; Hardware</h3><div class="term">All Terms</div></div>
+          </div>
+          <div class="topic-card-body"><p>Data communication, computer networks, HTML, peripheral devices, logic gates, number systems.</p></div>
+          <div class="topic-card-footer"><span class="lessons">📖 20 Lessons</span><button class="go-btn">Study →</button></div>
+        </div>
+      </div>
+
+      <div class="section-header"><h2>🚀 Quick Revision</h2></div>
+      <div class="topics-grid">
+        <div class="topic-card" onclick="window.location.href='part5_mockpapers.html'">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,215,0,0.05))">
+            <span class="topic-icon">✅</span>
+            <div><h3>MCQ Practice – Paper 1</h3><div class="term">200+ Questions from Mocks &amp; GCE</div></div>
+          </div>
+          <div class="topic-card-body"><p>Multiple choice questions from HIHS, SW Regional, Littoral Mocks and GCE past papers. Graded with instant feedback.</p></div>
+          <div class="topic-card-footer"><span class="lessons">🎯 Graded</span><button class="go-btn">Start →</button></div>
+        </div>
+        <div class="topic-card" onclick="showPage('past-papers')">
+          <div class="topic-card-header" style="background:linear-gradient(135deg,rgba(46,204,113,0.2),rgba(46,204,113,0.05))">
+            <span class="topic-icon">📜</span>
+            <div><h3>Past &amp; Mock Papers</h3><div class="term">2019–2026</div></div>
+          </div>
+          <div class="topic-card-body"><p>Complete mock and GCE past papers organised by year and paper. HIHS, SW, Littoral, Far North, and Centre Mocks.</p></div>
+          <div class="topic-card-footer"><span class="lessons">📋 8 Papers</span><button class="go-btn">View →</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE I -->
+    <div class="page" id="page-module1">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>📚 Module I: Information System &amp; Data Resource Management</span>
+      </div>
+      <div id="module1-list">
+        <div class="section-header"><h2>📖 Module I – Topics</h2><p>First &amp; Second Term · Based on National Progression Sheet</p></div>
+        <div class="lesson-list" id="m1-list"></div>
+      </div>
+      <div id="module1-content" style="display:none">
+        <div class="content-breadcrumb">
+          <button class="breadcrumb-back" onclick="showM1List()">← All Topics</button>
+          <span id="m1-crumb"></span>
+        </div>
+        <div class="lesson-content" id="m1-body"></div>
+        <div class="content-footer">
+          <button class="nav-btn prev" onclick="m1Nav(-1)">← Previous</button>
+          <button class="nav-btn next" onclick="m1Nav(1)">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE II -->
+    <div class="page" id="page-module2">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>👥 Module II: Technology &amp; Society</span>
+      </div>
+      <div id="module2-list">
+        <div class="section-header"><h2>📖 Module II – Topics</h2><p>Second Term</p></div>
+        <div class="lesson-list" id="m2-list"></div>
+      </div>
+      <div id="module2-content" style="display:none">
+        <div class="content-breadcrumb">
+          <button class="breadcrumb-back" onclick="showM2List()">← All Topics</button>
+          <span id="m2-crumb"></span>
+        </div>
+        <div class="lesson-content" id="m2-body"></div>
+        <div class="content-footer">
+          <button class="nav-btn prev" onclick="m2Nav(-1)">← Previous</button>
+          <button class="nav-btn next" onclick="m2Nav(1)">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE III -->
+    <div class="page" id="page-module3">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>⌨️ Module III: Software Development</span>
+      </div>
+      <div id="module3-list">
+        <div class="section-header"><h2>📖 Module III – Topics</h2><p>First &amp; Third Term</p></div>
+        <div class="lesson-list" id="m3-list"></div>
+      </div>
+      <div id="module3-content" style="display:none">
+        <div class="content-breadcrumb">
+          <button class="breadcrumb-back" onclick="showM3List()">← All Topics</button>
+          <span id="m3-crumb"></span>
+        </div>
+        <div class="lesson-content" id="m3-body"></div>
+        <div class="content-footer">
+          <button class="nav-btn prev" onclick="m3Nav(-1)">← Previous</button>
+          <button class="nav-btn next" onclick="m3Nav(1)">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE IV -->
+    <div class="page" id="page-module4">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>🌐 Module IV: Networks, Web &amp; Hardware</span>
+      </div>
+      <div id="module4-list">
+        <div class="section-header"><h2>📖 Module IV – Topics</h2><p>All Terms</p></div>
+        <div class="lesson-list" id="m4-list"></div>
+      </div>
+      <div id="module4-content" style="display:none">
+        <div class="content-breadcrumb">
+          <button class="breadcrumb-back" onclick="showM4List()">← All Topics</button>
+          <span id="m4-crumb"></span>
+        </div>
+        <div class="lesson-content" id="m4-body"></div>
+        <div class="content-footer">
+          <button class="nav-btn prev" onclick="m4Nav(-1)">← Previous</button>
+          <button class="nav-btn next" onclick="m4Nav(1)">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAST PAPERS -->
+    <div class="page" id="page-past-papers">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>📜 Past &amp; Mock Papers</span>
+      </div>
+      <div class="section-header"><h2>📜 Mock &amp; Past Papers</h2><p>Grouped by examination session — select a paper to study or attempt</p></div>
+      <div class="topics-grid" id="papers-grid"></div>
+    </div>
+
+    <!-- QUIZ MCQ -->
+    <div class="page" id="page-quiz-mcq">
+      <div id="quiz-setup">
+        <div class="content-breadcrumb">
+          <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+          <span>✅ MCQ Practice</span>
+        </div>
+        <div class="section-header"><h2>✅ MCQ Practice – Paper 1</h2><p>Choose a topic or attempt a full mixed quiz</p></div>
+        <div class="topics-grid" id="quiz-topic-grid"></div>
+      </div>
+      <div id="quiz-runner" style="display:none"></div>
+    </div>
+
+    <!-- STRUCTURED QUESTIONS -->
+    <div class="page" id="page-quiz-structured">
+      <div class="content-breadcrumb">
+        <button class="breadcrumb-back" onclick="showPage('dashboard')">← Back</button>
+        <span>📄 Structured Questions</span>
+      </div>
+      <div class="section-header"><h2>📄 Structured Questions – Paper 2</h2><p>Extended answer questions with marking guides</p></div>
+      <div id="structured-list"></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page" id="page-admin">
+      <div class="content-breadcrumb">
+        <span>🔧 Admin Dashboard</span>
+      </div>
+      <div id="admin-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== PROTECTION =====
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','p','s','u','a'].includes(e.key.toLowerCase()))e.preventDefault();
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase())))e.preventDefault();
+});
+
+// ===== SESSION CHECK =====
+const userCIN = sessionStorage.getItem('userCIN');
+const userName = sessionStorage.getItem('userName');
+const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+
+if(!userCIN){ window.location.href='index.html'; }
+
+document.getElementById('userBadge').textContent = '👤 ' + (userName||'Student');
+document.getElementById('welcomeName').textContent = 'Welcome, ' + (userName||'Student') + '! 👋';
+if(isAdmin){ document.getElementById('adminNav').style.display='block'; }
+
+// Track session duration
+const sessionStart = Date.now();
+window.addEventListener('beforeunload',()=>{
+  const duration = Math.round((Date.now()-sessionStart)/1000);
+  if(duration < 3) return;
+  const sessionId = sessionStorage.getItem('serverSessionId');
+  if(sessionId){
+    // sendBeacon works even during page unload
+    navigator.sendBeacon('/api/logout', JSON.stringify({ sessionId, duration }));
+  }
+});
+    localStorage.setItem('durationLogs', JSON.stringify(dLogs));
+  }
+});
+
+function doLogout(){
+  // Save session duration to localStorage BEFORE clearing session
+  const duration = Math.round((Date.now()-sessionStart)/1000);
+  const dLogs = JSON.parse(localStorage.getItem('durationLogs')||'[]');
+  dLogs.push({ cin:userCIN, name:userName, duration, date:new Date().toISOString() });
+  localStorage.setItem('durationLogs', JSON.stringify(dLogs));
+  // Only clear SESSION data — NEVER touch localStorage (that holds all logs/scores)
+  sessionStorage.removeItem('userCIN');
+  sessionStorage.removeItem('userName');
+  sessionStorage.removeItem('isAdmin');
+  sessionStorage.removeItem('quizTopic');
+  window.location.href='index.html';
+}
+
+// ===== SIDEBAR =====
+let sidebarOpen = window.innerWidth > 640;
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('overlay');
+  const main=document.getElementById('mainContent');
+  sidebarOpen=!sidebarOpen;
+  if(window.innerWidth<=640){
+    sb.classList.toggle('open',sidebarOpen);
+    ov.classList.toggle('show',sidebarOpen);
+  } else {
+    sb.classList.toggle('hidden',!sidebarOpen);
+    main.classList.toggle('full',!sidebarOpen);
+  }
+}
+if(window.innerWidth<=640){ document.getElementById('sidebar').classList.remove('open'); }
+
+// ===== PAGE NAVIGATION =====
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const navEl=document.getElementById('nav-'+id);
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+  if(window.innerWidth<=640){ toggleSidebar(); }
+  if(id==='module1') renderM1List();
+  if(id==='module2') renderM2List();
+  if(id==='module3') renderM3List();
+  if(id==='module4') renderM4List();
+  if(id==='past-papers') renderPapers2();
+  if(id==='quiz-mcq') renderQuizTopics();
+  if(id==='quiz-structured') { window.location.href='part4_structured.html'; return; }
+  if(id==='admin') renderAdmin();
+}
+
+// ===================================================
+// MODULE I CONTENT
+// ===================================================
+const M1_TOPICS = [
+  {
+    id:'m1t1', num:'Chapter 1', title:'Information System (IS)',
+    term:'First Term', type:'Theory',
+    content:`<h1>Chapter 1: Information System (IS)</h1>
+<h2>Lesson 1: Introduction to Information Systems</h2>
+<div class="def-box"><strong>Definition:</strong> An information system is a set of integrated elements or components that collect, manipulate and disseminate information and provide a feedback mechanism to meet an objective. The minimal IS consists of people, procedures and data.</div>
+<p>A <strong>CBIS (Computer-Based Information System)</strong> uses computer technology as the main component. Examples include: computerised library management, hospital management, school management, and reservation systems.</p>
+<h3>Components of an Information System</h3>
+<ul>
+<li><strong>Data and Information:</strong> Data = raw facts and figures. Information = processed data that has meaning.</li>
+<li><strong>Hardware:</strong> Physical technology – from smartphones to supercomputers.</li>
+<li><strong>Software:</strong> Programs that instruct the hardware what to do.</li>
+<li><strong>Networks:</strong> Allow computers to share resources (wired or wireless).</li>
+<li><strong>Databases:</strong> Organised collections of data for storage, accessibility and retrieval.</li>
+<li><strong>Procedures:</strong> Commands for combining components to process information.</li>
+<li><strong>People (Users):</strong> Operate hardware and create/use software.</li>
+</ul>
+<h3>Advantages of CBIS</h3>
+<ul>
+<li>Many users can access information simultaneously through a network.</li>
+<li>Large storage capacity replaces filing cabinets.</li>
+<li>Saves time, resources and money by processing information automatically.</li>
+<li>Provides fast and accurate information to support decision-making.</li>
+<li>Improves productivity and reduces duplication of information.</li>
+</ul>
+<h3>Disadvantages of CBIS</h3>
+<ul>
+<li>Security is needed to protect data.</li>
+<li>Users must be trained to use the system.</li>
+<li>Computers hold personal information which may be misused.</li>
+<li>Expensive to develop.</li>
+<li>System crashes can cause data loss.</li>
+</ul>
+<h3>Levels of Management in an Organisation</h3>
+<div class="table-wrap"><table><thead><tr><th>Level</th><th>Name</th><th>Role</th><th>Information System</th></tr></thead><tbody>
+<tr><td>Top</td><td>Strategic Management</td><td>Overall direction, long-term goals</td><td>EIS</td></tr>
+<tr><td>Middle</td><td>Tactical Management</td><td>Develop strategies and objectives</td><td>MIS / DSS</td></tr>
+<tr><td>Lower</td><td>Operational Management</td><td>Day-to-day operations</td><td>TPS</td></tr>
+</tbody></table></div>
+<h2>Lesson 2: Types of Information Systems</h2>
+<h3>1. Transaction Processing System (TPS)</h3>
+<div class="def-box">Operated by shop floor workers. Provides key data to support management. Examples: payroll, order processing, reservation systems, stock control.</div>
+<p><strong>Characteristics:</strong> Produces information for other systems; used by operational/supervisory levels; efficiency-oriented.</p>
+<h3>2. Management Information System (MIS)</h3>
+<div class="def-box">Used by middle managers to ensure smooth running of the organisation. Examples: sales management, inventory control, budgeting, personnel systems.</div>
+<p><strong>Characteristics:</strong> Supports structured decisions; deals with past and present; used by lower and middle management.</p>
+<h3>3. Decision Support System (DSS)</h3>
+<div class="def-box">Knowledge-based system used by senior managers to project effects of decisions. Examples: logistics systems, financial planning systems.</div>
+<p><strong>Characteristics:</strong> Supports semi-structured decisions; has analytical/modelling capacity; concerned with predicting the future.</p>
+<h3>4. Executive Information System (EIS)</h3>
+<div class="def-box">Strategic-level IS at the top of the pyramid. Helps executives analyse trends and plan long-term actions.</div>
+<p><strong>Characteristics:</strong> Ease of use; highly flexible; supports unstructured decisions; uses internal and external data sources; used only at senior management level.</p>`
+  },
+  {
+    id:'m1t2', num:'Chapter 2', title:'Modelling and Simulation',
+    term:'First Term', type:'Theory',
+    content:`<h1>Chapter 2: Modelling and Simulating Systems</h1>
+<h2>1. Modelling Systems</h2>
+<div class="def-box"><strong>System modelling</strong> is the process of using models to conceptualise and construct systems in business and IT development.</div>
+<p>A <strong>model</strong> is a precise representation of how a system works. It can also be an abstract representation of an object or set of objects having common characteristics.</p>
+<h2>2. Simulation Systems</h2>
+<div class="def-box"><strong>A simulation system</strong> is a system that imitates the real system to find out what happens under different situations and conditions. It involves creating models and then testing how they behave.</div>
+<p>Simulations avoid the expense or danger of making mistakes in the real system. Examples: traffic simulation, flight simulators, pilot training.</p>
+<h2>3. Advantages of Modelling and Simulation</h2>
+<ul>
+<li>Safer and cheaper than real-world testing.</li>
+<li>Able to test a product or system before building it.</li>
+<li>Can identify unexpected problems early.</li>
+<li>Able to explore 'what if…' questions.</li>
+<li>Can speed things up or slow them down to see changes over long or short periods.</li>
+</ul>
+<h2>4. Disadvantages of Modelling and Simulation</h2>
+<ul>
+<li>Mistakes may be made in programming the simulation.</li>
+<li>Cost of the simulation model can be high.</li>
+<li>Running several simulations may be expensive.</li>
+<li>Time may be needed to interpret the results.</li>
+<li>People's reactions in the simulation might not be realistic.</li>
+</ul>
+<h2>5. What-If Analysis Using Spreadsheet (MS Excel)</h2>
+<div class="def-box"><strong>What-if analysis</strong> is the process of changing values in cells to see how those changes affect the outcome of formulas on the worksheet.</div>
+<p>Three kinds of What-If Analysis tools in Excel:</p>
+<ul>
+<li><strong>Scenarios:</strong> Save and switch between sets of input values.</li>
+<li><strong>Goal Seek:</strong> Specify a target result and find the input value needed.</li>
+<li><strong>Data Tables:</strong> Work with one or two variables to explore many possible results.</li>
+</ul>`
+  },
+  {
+    id:'m1t3', num:'Chapter 3', title:'Monitoring and Control Systems',
+    term:'First Term', type:'Theory',
+    content:`<h1>Chapter 3: Monitoring and Control Systems</h1>
+<h2>1. Monitoring Systems</h2>
+<div class="def-box">A <strong>monitoring system</strong> collects and reports data about the state of a system without making changes to it. It only observes and reports.</div>
+<p>Examples: weather monitoring stations, hospital patient monitoring, CCTV systems, environmental sensors.</p>
+<p><strong>Components:</strong> Sensors (collect data) → Processor (analyses data) → Output device (displays results).</p>
+<h2>2. Control Systems</h2>
+<div class="def-box">A <strong>control system</strong> not only monitors but also takes automatic action to adjust the system based on feedback. It uses a feedback loop.</div>
+<p>Examples: central heating thermostat, automatic traffic lights, autopilot in aircraft, industrial robots.</p>
+<p><strong>Components:</strong> Sensors → Processor → Actuators (make changes to the system).</p>
+<h2>3. Difference Between Monitoring and Control Systems</h2>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th>Monitoring System</th><th>Control System</th></tr></thead><tbody>
+<tr><td>Action taken</td><td>Observes and reports only</td><td>Observes AND makes adjustments</td></tr>
+<tr><td>Feedback loop</td><td>No feedback loop</td><td>Uses feedback loop</td></tr>
+<tr><td>Human required</td><td>Human makes decisions</td><td>Can operate autonomously</td></tr>
+<tr><td>Example</td><td>Weather station</td><td>Central heating thermostat</td></tr>
+</tbody></table></div>`
+  },
+  {
+    id:'m1t4', num:'Chapter 4', title:'System Development Life Cycle (SDLC)',
+    term:'First Term', type:'Theory',
+    content:`<h1>Chapter 4: System Development Life Cycle (SDLC)</h1>
+<div class="def-box"><strong>SDLC</strong> is a structured process used to develop information systems. It provides a systematic approach to planning, creating, testing, and delivering an information system.</div>
+<h2>Stages of the SDLC</h2>
+<h3>1. Planning / Investigation Phase</h3>
+<p>The feasibility of the project is assessed. A preliminary study is done to determine whether the project is viable (technically, financially, operationally). A project scope and plan are created.</p>
+<h3>2. Analysis Phase</h3>
+<p>Requirements are gathered from users and stakeholders. The current system is analysed to identify problems. A requirements specification document is produced.</p>
+<h3>3. Design Phase</h3>
+<p>The system design is created – including database design, user interface design, and process design. Hardware and software requirements are specified.</p>
+<h3>4. Development (Implementation/Coding) Phase</h3>
+<p>The actual system is built/coded based on the design. Programmers write code, databases are created, and hardware is installed.</p>
+<h3>5. Testing Phase</h3>
+<p>The system is thoroughly tested to find and fix errors. Types of testing: unit testing, integration testing, system testing, user acceptance testing (UAT).</p>
+<h3>6. Implementation Phase</h3>
+<p>The new system is deployed to users. Changeover strategies:</p>
+<ul>
+<li><strong>Direct/Plunge:</strong> Old system switched off, new one switches on immediately. Risky but cheap.</li>
+<li><strong>Parallel:</strong> Both old and new systems run simultaneously for a period. Safe but expensive.</li>
+<li><strong>Pilot:</strong> New system tested with a small group of selected users before full rollout.</li>
+<li><strong>Phased:</strong> New system introduced gradually, one part at a time.</li>
+</ul>
+<h3>7. Maintenance Phase</h3>
+<p>The system is monitored and updated after deployment. Includes fixing bugs, improving performance, and adapting to new needs.</p>
+<h2>SDLC Models</h2>
+<ul>
+<li><strong>Waterfall Model:</strong> Linear, sequential. Each phase must be completed before the next begins.</li>
+<li><strong>Agile Model:</strong> Iterative, flexible. Work done in short cycles (sprints).</li>
+<li><strong>Spiral Model:</strong> Combines iterative development with risk analysis.</li>
+<li><strong>Rapid Application Development (RAD):</strong> Focuses on quick prototyping and user feedback.</li>
+</ul>`
+  },
+  {
+    id:'m1t5', num:'Chapter 5', title:'Data Capture and Outsourcing',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Chapter 5: Data Capture and Outsourcing</h1>
+<h2>1. Data Capture</h2>
+<div class="def-box"><strong>Data capture</strong> is the process of collecting data and entering it into a computer system.</div>
+<h3>Manual Data Capture Methods</h3>
+<ul>
+<li><strong>Keyboard entry:</strong> Typing data directly.</li>
+<li><strong>Mouse/touchscreen:</strong> Clicking/tapping to input.</li>
+<li><strong>Voice input:</strong> Speaking into a microphone.</li>
+</ul>
+<h3>Automated Data Capture Methods</h3>
+<ul>
+<li><strong>OMR (Optical Mark Recognition):</strong> Reads marks made on paper (e.g., answer sheets).</li>
+<li><strong>OCR (Optical Character Recognition):</strong> Reads printed/handwritten text.</li>
+<li><strong>MICR (Magnetic Ink Character Recognition):</strong> Reads characters printed in magnetic ink (e.g., bank cheques).</li>
+<li><strong>Barcode reader:</strong> Reads barcodes on products.</li>
+<li><strong>QR code reader:</strong> Reads 2D QR codes.</li>
+<li><strong>RFID (Radio Frequency Identification):</strong> Reads radio signals from tags.</li>
+<li><strong>Biometrics:</strong> Fingerprints, iris scan, face recognition.</li>
+</ul>
+<h3>Data Verification vs. Data Validation</h3>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th>Verification</th><th>Validation</th></tr></thead><tbody>
+<tr><td>Definition</td><td>Checking data is correctly transferred</td><td>Checking data is sensible/reasonable</td></tr>
+<tr><td>Done by</td><td>Human or double-entry check</td><td>Computer (rules set by programmer)</td></tr>
+<tr><td>Example</td><td>Typing a password twice</td><td>Age must be between 0 and 120</td></tr>
+</tbody></table></div>
+<h3>Validation Checks</h3>
+<ul>
+<li><strong>Range check:</strong> Value must be within a defined range (e.g., age 1–120).</li>
+<li><strong>Type check:</strong> Data must be the correct type (e.g., numbers only).</li>
+<li><strong>Presence check:</strong> Field must not be empty.</li>
+<li><strong>Length check:</strong> Data must be a specific length.</li>
+<li><strong>Format check:</strong> Data must match a pattern (e.g., date format DD/MM/YYYY).</li>
+<li><strong>Lookup check:</strong> Value must match an entry in a list.</li>
+</ul>
+<h2>2. Outsourcing</h2>
+<div class="def-box"><strong>Outsourcing</strong> is the practice of a business hiring an external company or individual to perform services or create goods that traditionally were performed in-house.</div>
+<p><strong>Advantages:</strong> Cost savings, access to specialised skills, focus on core business, flexibility.</p>
+<p><strong>Disadvantages:</strong> Loss of control, security risks, communication difficulties, dependency on external provider.</p>`
+  },
+  {
+    id:'m1t6', num:'Chapter 6', title:'Database and Data Resource Management',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Chapter 6: Database and Data Resource Management</h1>
+<h2>Key Definitions</h2>
+<div class="def-box"><strong>Data:</strong> Raw facts and figures with no meaning on their own (e.g., 25, "John").</div>
+<div class="def-box"><strong>Information:</strong> Data that has been processed to give it meaning (e.g., John is 25 years old).</div>
+<div class="def-box"><strong>Database:</strong> An organised collection of structured data, typically stored electronically and managed by a DBMS.</div>
+<h2>Database Terminology</h2>
+<div class="table-wrap"><table><thead><tr><th>Term</th><th>Definition</th><th>Example</th></tr></thead><tbody>
+<tr><td>Field (Attribute)</td><td>A single piece of data about an entity</td><td>Name, Age, StudentID</td></tr>
+<tr><td>Record</td><td>A collection of related fields</td><td>One student's complete entry</td></tr>
+<tr><td>Table (Relation)</td><td>A collection of related records</td><td>Students table</td></tr>
+<tr><td>Primary Key</td><td>A field that uniquely identifies each record</td><td>StudentID</td></tr>
+<tr><td>Foreign Key</td><td>A field that links one table to the primary key of another</td><td>ClassID in Student table</td></tr>
+</tbody></table></div>
+<h2>Types of Databases</h2>
+<ul>
+<li><strong>Flat File Database:</strong> Single table, no relationships. Simple but prone to redundancy.</li>
+<li><strong>Relational Database:</strong> Multiple tables linked by keys. Reduces redundancy. Most common type.</li>
+<li><strong>Object-Oriented Database:</strong> Stores data as objects.</li>
+<li><strong>Distributed Database:</strong> Data stored across multiple locations.</li>
+</ul>
+<h2>Normalisation</h2>
+<p>Normalisation is the process of organising data in a database to reduce redundancy and improve data integrity.</p>
+<ul>
+<li><strong>1NF (First Normal Form):</strong> No repeating groups; all attributes are atomic (single values).</li>
+<li><strong>2NF (Second Normal Form):</strong> In 1NF + no partial dependencies (every non-key attribute depends on the whole primary key).</li>
+<li><strong>3NF (Third Normal Form):</strong> In 2NF + no transitive dependencies (non-key attributes depend only on the primary key).</li>
+</ul>
+<h2>DBMS (Database Management System)</h2>
+<div class="def-box">A <strong>DBMS</strong> is software that manages and organises databases. Examples: Microsoft Access, MySQL, Oracle, PostgreSQL.</div>
+<h3>Features of a DBMS</h3>
+<ul>
+<li>Data storage and retrieval</li>
+<li>Data security and access control</li>
+<li>Data integrity enforcement</li>
+<li>Backup and recovery</li>
+<li>Query processing (using SQL)</li>
+</ul>
+<h2>Data Integrity</h2>
+<div class="def-box"><strong>Data integrity</strong> refers to the accuracy, consistency, and reliability of data throughout its lifecycle.</div>
+<p>Ways to ensure data integrity: validation checks, access controls, transaction management, regular backups, encryption.</p>`
+  },
+  {
+    id:'m1t7', num:'Chapter 9', title:'Project Management',
+    term:'Third Term', type:'Theory',
+    content:`<h1>Chapter 9: Project Management</h1>
+<div class="def-box"><strong>A project</strong> is a temporary endeavour undertaken to create a unique product, service or result. It has a defined beginning and end.</div>
+<h2>Key Definitions</h2>
+<ul>
+<li><strong>Project Management:</strong> Planning, scheduling, and controlling activities to achieve project objectives within constraints of time, cost, and quality.</li>
+<li><strong>Project Manager:</strong> Person responsible for leading the project team and ensuring project goals are met.</li>
+<li><strong>Milestone:</strong> A significant point or event in the project (no duration).</li>
+<li><strong>Critical Path:</strong> The longest sequence of tasks that determines the minimum project duration.</li>
+<li><strong>Slack Time (Float):</strong> The amount of time a task can be delayed without delaying the overall project.</li>
+<li><strong>Task/Activity:</strong> A specific piece of work with a duration.</li>
+</ul>
+<h2>Project Life Cycle</h2>
+<ol>
+<li><strong>Initiation:</strong> Define the project goal and feasibility.</li>
+<li><strong>Planning:</strong> Create a detailed plan, schedule, and budget.</li>
+<li><strong>Execution:</strong> Carry out the project plan.</li>
+<li><strong>Monitoring &amp; Control:</strong> Track progress against the plan.</li>
+<li><strong>Closure:</strong> Deliver the final product and review the project.</li>
+</ol>
+<h2>Project Management Tools</h2>
+<h3>Gantt Chart</h3>
+<div class="def-box">A <strong>Gantt chart</strong> is a horizontal bar chart that shows the schedule of project activities over time. Each bar represents a task and shows its start date, duration, and end date.</div>
+<p><strong>Advantages:</strong> Easy to understand, shows task duration and overlap, easy to update.</p>
+<p><strong>Disadvantages:</strong> Does not show dependencies between tasks clearly, can become complex for large projects.</p>
+<h3>PERT Chart (Program Evaluation and Review Technique)</h3>
+<div class="def-box">A <strong>PERT chart</strong> is a network diagram showing the sequence and dependencies of project tasks. It is used to identify the critical path.</div>
+<p><strong>Key Terms:</strong></p>
+<ul>
+<li><strong>Early Start (ES):</strong> Earliest a task can start.</li>
+<li><strong>Early Finish (EF):</strong> Earliest a task can finish = ES + Duration.</li>
+<li><strong>Late Start (LS):</strong> Latest a task can start without delaying project.</li>
+<li><strong>Late Finish (LF):</strong> Latest a task can finish without delaying project.</li>
+<li><strong>Slack = LS – ES (or LF – EF)</strong></li>
+</ul>
+<div class="info-box"><strong>Critical Path:</strong> The path through the PERT chart where all tasks have zero slack. This is the longest path and determines the project duration.</div>
+<h3>Difference: Gantt Chart vs PERT Chart</h3>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th>Gantt Chart</th><th>PERT Chart</th></tr></thead><tbody>
+<tr><td>Format</td><td>Bar chart</td><td>Network diagram</td></tr>
+<tr><td>Shows dependencies</td><td>Not clearly</td><td>Yes, clearly</td></tr>
+<tr><td>Shows critical path</td><td>No</td><td>Yes</td></tr>
+<tr><td>Ease of understanding</td><td>Easy</td><td>More complex</td></tr>
+</tbody></table></div>`
+  }
+];
+
+const M2_TOPICS = [
+  {
+    id:'m2t1', num:'Chapter 7', title:'Careers in IT and Computer Applications',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Chapter 7: Careers in IT and Areas of Application</h1>
+<h2>1. Careers in Information Technology</h2>
+<h3>Hardware-Related Careers</h3>
+<ul>
+<li><strong>Computer Engineer:</strong> Designs and develops computer hardware components.</li>
+<li><strong>Network Engineer:</strong> Installs, maintains and troubleshoots networks.</li>
+<li><strong>Hardware Technician:</strong> Repairs and maintains computer hardware.</li>
+<li><strong>Electronics Engineer:</strong> Designs electronic circuits and systems.</li>
+</ul>
+<h3>Software-Related Careers</h3>
+<ul>
+<li><strong>Software Developer/Programmer:</strong> Writes and tests software applications.</li>
+<li><strong>Systems Analyst:</strong> Analyses existing systems and designs improvements.</li>
+<li><strong>Database Administrator (DBA):</strong> Manages and maintains databases.</li>
+<li><strong>Web Developer:</strong> Designs and builds websites and web applications.</li>
+<li><strong>Cybersecurity Analyst:</strong> Protects computer systems from attacks.</li>
+<li><strong>IT Project Manager:</strong> Plans and manages IT projects.</li>
+</ul>
+<h2>2. Areas of Application of Computers</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Applications</th></tr></thead><tbody>
+<tr><td>Education</td><td>e-Learning platforms, computer-based testing, virtual classrooms</td></tr>
+<tr><td>Medicine/Health</td><td>Patient records, diagnostic imaging, robotic surgery</td></tr>
+<tr><td>Business/Commerce</td><td>Online banking, e-commerce, payroll, inventory</td></tr>
+<tr><td>Entertainment</td><td>Video games, digital music, streaming, animation</td></tr>
+<tr><td>Communication</td><td>Email, social media, video calls, instant messaging</td></tr>
+<tr><td>Science &amp; Research</td><td>Simulations, data analysis, weather forecasting</td></tr>
+<tr><td>Transport</td><td>GPS navigation, traffic control, autopilot systems</td></tr>
+<tr><td>Government</td><td>E-voting, national databases, tax collection</td></tr>
+</tbody></table></div>`
+  },
+  {
+    id:'m2t2', num:'Chapter 7B', title:'Computer Ergonomics and Health Hazards',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Computer Ergonomics and Health Hazards</h1>
+<div class="def-box"><strong>Ergonomics</strong> is the science of designing equipment, systems, and workplaces to fit the people who use them, improving comfort, efficiency, and safety.</div>
+<h2>Computer Health Hazards</h2>
+<div class="table-wrap"><table><thead><tr><th>Disorder</th><th>Cause</th><th>Body Part Affected</th></tr></thead><tbody>
+<tr><td>Repetitive Strain Injury (RSI)</td><td>Repetitive movements (e.g., typing, clicking)</td><td>Wrists, hands, fingers</td></tr>
+<tr><td>Carpal Tunnel Syndrome</td><td>Prolonged use of keyboard/mouse</td><td>Wrist, hand</td></tr>
+<tr><td>Eye Strain (CVS)</td><td>Prolonged screen use</td><td>Eyes</td></tr>
+<tr><td>Back/Neck Pain</td><td>Poor posture, wrong chair height</td><td>Back, neck, spine</td></tr>
+<tr><td>Headaches</td><td>Screen glare, eye strain</td><td>Head</td></tr>
+</tbody></table></div>
+<h2>Safety Precautions (Ergonomic Solutions)</h2>
+<ul>
+<li>Adjust chair height so feet are flat on floor.</li>
+<li>Place monitor at eye level, arm's length away.</li>
+<li>Use wrist rests when typing.</li>
+<li>Take regular breaks (at least every hour).</li>
+<li>Use anti-glare screen filters.</li>
+<li>Keep cables tidy to prevent trip hazards.</li>
+<li>Ensure good room lighting.</li>
+<li>Use adjustable desks and chairs.</li>
+</ul>
+<h2>Assistive Technology for Social Inclusion</h2>
+<div class="def-box"><strong>Assistive technology</strong> is any technology that helps people with disabilities use computers and access information.</div>
+<ul>
+<li><strong>Screen reader:</strong> Software that reads screen content aloud (e.g., JAWS) – for visually impaired users.</li>
+<li><strong>Braille keyboard:</strong> Keyboard with Braille characters.</li>
+<li><strong>Voice recognition software:</strong> Control computer by voice.</li>
+<li><strong>Eye-tracking device:</strong> Control computer using eye movements.</li>
+<li><strong>Screen magnifier:</strong> Enlarges screen content.</li>
+<li><strong>Switch access:</strong> Allows users with limited motor skills to operate computers with a single button.</li>
+</ul>`
+  },
+  {
+    id:'m2t3', num:'Chapter: Ethics', title:'Computer Ethics and Legislation',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Computer Ethics and Legislation</h1>
+<h2>I. Computer Ethics</h2>
+<div class="def-box"><strong>Computer ethics</strong> is a branch of practical philosophy dealing with how computing professionals should make decisions regarding professional and social conduct.</div>
+<h3>Fundamental Principles of Ethics</h3>
+<ul>
+<li><strong>Honesty:</strong> Be truthful in all professional activities.</li>
+<li><strong>Fairness:</strong> Treat all people equally and without bias.</li>
+<li><strong>Privacy:</strong> Respect individuals' personal information.</li>
+<li><strong>Responsibility:</strong> Be accountable for your actions.</li>
+<li><strong>Non-maleficence:</strong> Do not use technology to harm others.</li>
+</ul>
+<h3>Professional Codes of Ethics</h3>
+<ul>
+<li><strong>BCS Code of Ethics:</strong> Serve public interest; maintain professional competence; act with integrity.</li>
+<li><strong>ACM Code of Ethics:</strong> Contribute to society; avoid harm; be honest and trustworthy.</li>
+<li><strong>IEEE Code of Ethics:</strong> Hold safety paramount; act in the public interest; be honest.</li>
+</ul>
+<h2>II. Legislation (Laws)</h2>
+<div class="table-wrap"><table><thead><tr><th>Act</th><th>Purpose</th><th>Key Points</th></tr></thead><tbody>
+<tr><td>Data Protection Act</td><td>Protect personal data</td><td>Data must be accurate, secure, used for intended purpose; individuals have right to see their data.</td></tr>
+<tr><td>Computer Misuse Act</td><td>Combat computer crime</td><td>Makes unauthorised access, modification of computer material, and use of computers for fraud illegal.</td></tr>
+<tr><td>Copyright, Design and Patent Act</td><td>Protect intellectual property</td><td>Makes it illegal to copy, distribute, or use software, music, or other creative works without permission.</td></tr>
+<tr><td>Health and Safety Act</td><td>Protect workers</td><td>Employers must provide safe working conditions, including safe use of computers and VDUs.</td></tr>
+</tbody></table></div>
+<h2>III. Computer Crime</h2>
+<div class="table-wrap"><table><thead><tr><th>Crime</th><th>Description</th></tr></thead><tbody>
+<tr><td>Hacking</td><td>Unauthorised access to computer systems</td></tr>
+<tr><td>Phishing</td><td>Using fake emails/websites to steal personal information</td></tr>
+<tr><td>Identity Theft</td><td>Using someone else's personal information fraudulently</td></tr>
+<tr><td>Cyberbullying</td><td>Using the internet to harass or threaten others</td></tr>
+<tr><td>Software Piracy</td><td>Copying or distributing software without a licence</td></tr>
+<tr><td>Invasion of Privacy</td><td>Collecting or misusing personal data without consent</td></tr>
+</tbody></table></div>`
+  },
+  {
+    id:'m2t4', num:'Chapter: Social', title:'Social and Economic Impacts of Computers',
+    term:'Second Term', type:'Theory',
+    content:`<h1>Social and Economic Impacts of Computers</h1>
+<h2>Positive Impacts</h2>
+<ul>
+<li><strong>Employment:</strong> Created many new types of jobs in IT sector.</li>
+<li><strong>Communication:</strong> Instant worldwide communication.</li>
+<li><strong>Education:</strong> Access to vast information resources globally.</li>
+<li><strong>Healthcare:</strong> Improved diagnosis, treatment, and patient care.</li>
+<li><strong>Productivity:</strong> Tasks done faster and more accurately.</li>
+<li><strong>Business:</strong> Global trade, e-commerce, online banking.</li>
+<li><strong>Entertainment:</strong> New forms of entertainment – streaming, gaming.</li>
+</ul>
+<h2>Negative Impacts</h2>
+<ul>
+<li><strong>Unemployment:</strong> Automation has replaced some human jobs.</li>
+<li><strong>Privacy concerns:</strong> Personal data collection and misuse.</li>
+<li><strong>Digital divide:</strong> Unequal access to technology creates inequality.</li>
+<li><strong>Cybercrime:</strong> Increased opportunities for fraud, theft, hacking.</li>
+<li><strong>Health problems:</strong> Eye strain, RSI, sedentary lifestyle, addiction.</li>
+<li><strong>Spread of misinformation:</strong> False information spreads quickly online.</li>
+<li><strong>Environmental impact:</strong> e-Waste, energy consumption of data centres.</li>
+</ul>
+<h2>Impacts of Social Networks</h2>
+<p><strong>Positive:</strong> Reconnect with old friends; share ideas and information; support communities; marketing for businesses; raise awareness for social causes.</p>
+<p><strong>Negative:</strong> Cyberbullying; addiction; privacy invasion; spread of misinformation; reduced face-to-face interaction; security risks.</p>`
+  }
+];
+
+const M3_TOPICS = [
+  {
+    id:'m3t1', num:'Chapter: Algorithms', title:'Algorithms and Problem Solving',
+    term:'First Term', type:'Theory + Practical',
+    content:`<h1>Algorithms and Problem Solving</h1>
+<h2>1. What is an Algorithm?</h2>
+<div class="def-box"><strong>An algorithm</strong> is a step-by-step set of instructions for solving a problem or completing a task. It has a finite number of steps and always terminates.</div>
+<h3>Characteristics of a Good Algorithm</h3>
+<ul>
+<li><strong>Input:</strong> Has zero or more inputs.</li>
+<li><strong>Output:</strong> Has one or more outputs.</li>
+<li><strong>Definiteness:</strong> Each step is clearly and precisely defined.</li>
+<li><strong>Finiteness:</strong> Always terminates (ends) after a finite number of steps.</li>
+<li><strong>Effectiveness:</strong> Each step is basic enough to be carried out.</li>
+</ul>
+<h2>2. Representing Algorithms</h2>
+<h3>a. Pseudocode</h3>
+<div class="def-box"><strong>Pseudocode</strong> is a way of writing algorithms using simple English-like statements without following the exact syntax of any programming language.</div>
+<div class="info-box"><strong>Common pseudocode keywords:</strong> START, STOP, INPUT, OUTPUT/PRINT, IF...THEN...ELSE...ENDIF, WHILE...DO...ENDWHILE, FOR...TO...NEXT, SET, READ, WRITE</div>
+<h3>b. Flowcharts</h3>
+<div class="table-wrap"><table><thead><tr><th>Symbol</th><th>Name</th><th>Used For</th></tr></thead><tbody>
+<tr><td>Oval / Rounded rectangle</td><td>Terminal</td><td>Start and End</td></tr>
+<tr><td>Rectangle</td><td>Process</td><td>Actions and calculations</td></tr>
+<tr><td>Parallelogram</td><td>Input/Output</td><td>Input and Output</td></tr>
+<tr><td>Diamond (Rhombus)</td><td>Decision</td><td>Conditions (Yes/No)</td></tr>
+<tr><td>Arrow</td><td>Flow line</td><td>Direction of flow</td></tr>
+</tbody></table></div>
+<h2>3. Control Structures</h2>
+<h3>a. Sequence</h3>
+<p>Instructions executed one after another in order.</p>
+<h3>b. Selection (Conditional)</h3>
+<p>Execute different instructions based on a condition.</p>
+<div class="info-box">
+<strong>Pseudocode example:</strong><br>
+IF score >= 50 THEN<br>
+&nbsp;&nbsp;&nbsp;PRINT "Pass"<br>
+ELSE<br>
+&nbsp;&nbsp;&nbsp;PRINT "Fail"<br>
+ENDIF
+</div>
+<h3>c. Iteration (Loops)</h3>
+<div class="info-box">
+<strong>WHILE loop:</strong><br>
+WHILE count &lt;= 10 DO<br>
+&nbsp;&nbsp;&nbsp;PRINT count<br>
+&nbsp;&nbsp;&nbsp;SET count = count + 1<br>
+ENDWHILE<br><br>
+<strong>FOR loop:</strong><br>
+FOR i = 1 TO 5<br>
+&nbsp;&nbsp;&nbsp;PRINT i<br>
+NEXT i
+</div>
+<h2>4. Common Algorithms</h2>
+<h3>Swap Algorithm</h3>
+<div class="info-box">SET temp = A<br>SET A = B<br>SET B = temp</div>
+<h3>Finding Maximum</h3>
+<div class="info-box">SET max = list[1]<br>FOR i = 2 TO n<br>&nbsp;&nbsp;IF list[i] > max THEN<br>&nbsp;&nbsp;&nbsp;&nbsp;SET max = list[i]<br>&nbsp;&nbsp;ENDIF<br>NEXT i</div>
+<h3>Linear Search</h3>
+<div class="info-box">SET found = FALSE<br>FOR i = 1 TO n<br>&nbsp;&nbsp;IF list[i] = target THEN<br>&nbsp;&nbsp;&nbsp;&nbsp;SET found = TRUE<br>&nbsp;&nbsp;ENDIF<br>NEXT i</div>
+<h3>Bubble Sort</h3>
+<div class="info-box">Repeatedly compare adjacent elements and swap if out of order, until no swaps are needed.</div>`
+  },
+  {
+    id:'m3t2', num:'Chapter: Programming', title:'Programming Languages and Paradigms',
+    term:'First Term', type:'Theory',
+    content:`<h1>Programming Languages and Paradigms</h1>
+<h2>1. Programming Languages</h2>
+<div class="def-box"><strong>A programming language</strong> is a formal language comprising a set of instructions that produce various kinds of output and implement algorithms.</div>
+<h3>Low-Level Languages</h3>
+<ul>
+<li><strong>Machine Language (1GL):</strong> Binary code (0s and 1s). Directly understood by CPU. Very fast but difficult to write.</li>
+<li><strong>Assembly Language (2GL):</strong> Uses mnemonics (e.g., ADD, MOV, LOAD). Needs an assembler to translate to machine code.</li>
+</ul>
+<h3>High-Level Languages (3GL and above)</h3>
+<ul>
+<li>Close to human language. Examples: Python, Java, C, C++, Pascal, BASIC.</li>
+<li>Portable (can run on different hardware with little modification).</li>
+<li>Must be translated to machine code by a compiler or interpreter.</li>
+</ul>
+<h2>2. Language Translators</h2>
+<div class="table-wrap"><table><thead><tr><th>Translator</th><th>Description</th><th>Produces</th></tr></thead><tbody>
+<tr><td>Assembler</td><td>Translates assembly language to machine code</td><td>Machine code</td></tr>
+<tr><td>Compiler</td><td>Translates entire source code at once; produces object code</td><td>Executable file</td></tr>
+<tr><td>Interpreter</td><td>Translates and executes one line at a time</td><td>No separate file</td></tr>
+</tbody></table></div>
+<h2>3. Programming Paradigms</h2>
+<div class="table-wrap"><table><thead><tr><th>Paradigm</th><th>Description</th><th>Languages</th></tr></thead><tbody>
+<tr><td>Procedural / Imperative</td><td>Programs as sequences of instructions; uses procedures/functions</td><td>C, Pascal, BASIC</td></tr>
+<tr><td>Object-Oriented (OOP)</td><td>Organises code into objects with properties and methods</td><td>Java, Python, C++</td></tr>
+<tr><td>Functional</td><td>Programs as mathematical functions; avoids changing state</td><td>Haskell, Erlang</td></tr>
+<tr><td>Declarative</td><td>Describes what to do, not how to do it</td><td>SQL, HTML</td></tr>
+</tbody></table></div>
+<h2>4. Data Types</h2>
+<div class="table-wrap"><table><thead><tr><th>Data Type</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>Integer</td><td>Whole numbers (no decimal)</td><td>5, -3, 0</td></tr>
+<tr><td>Real/Float</td><td>Numbers with decimal point</td><td>3.14, -2.5</td></tr>
+<tr><td>Boolean</td><td>True or False only</td><td>True, False</td></tr>
+<tr><td>Character (Char)</td><td>Single character</td><td>'A', '5'</td></tr>
+<tr><td>String</td><td>Sequence of characters</td><td>"Hello"</td></tr>
+</tbody></table></div>
+<h2>5. Program Errors</h2>
+<ul>
+<li><strong>Syntax Error:</strong> Code breaks grammar rules of the language. Caught by compiler/interpreter. Example: missing semicolon.</li>
+<li><strong>Logic Error:</strong> Program runs but produces wrong output. The algorithm/reasoning is incorrect. Hardest to find.</li>
+<li><strong>Runtime Error:</strong> Error that occurs during execution. Example: dividing by zero, accessing invalid memory.</li>
+</ul>`
+  },
+  {
+    id:'m3t3', num:'Chapter: Data Structures', title:'Data Structures',
+    term:'First Term', type:'Theory',
+    content:`<h1>Data Structures</h1>
+<div class="def-box">A <strong>data structure</strong> is a way of organising and storing data in a computer so that it can be accessed and modified efficiently.</div>
+<h2>Simple Data Types</h2>
+<ul>
+<li><strong>Integer:</strong> Whole numbers (e.g., 5, -10).</li>
+<li><strong>Real/Float:</strong> Numbers with decimals (e.g., 3.14).</li>
+<li><strong>Boolean:</strong> True or False.</li>
+<li><strong>Character:</strong> Single character (e.g., 'A').</li>
+<li><strong>String:</strong> Sequence of characters (e.g., "GHS Mbonjo").</li>
+</ul>
+<h2>Composite Data Structures</h2>
+<h3>Arrays</h3>
+<div class="def-box">An <strong>array</strong> is a collection of elements of the same data type stored at contiguous memory locations and accessed by index.</div>
+<p><strong>1D Array:</strong> A list. Example: marks[1..5] = [70, 65, 80, 55, 90]</p>
+<p><strong>2D Array:</strong> A table/matrix. Example: grid[row][column]</p>
+<h3>Records</h3>
+<div class="def-box">A <strong>record</strong> is a collection of related fields that can be of different data types, representing one entity.</div>
+<p>Example: Student record = {Name: String, Age: Integer, Pass: Boolean}</p>
+<h3>Lists</h3>
+<p>An ordered collection of items (like arrays but can grow/shrink).</p>
+<h3>Queues</h3>
+<p>FIFO (First In, First Out) structure. Items added at rear, removed from front. Example: printer queue.</p>
+<h3>Stacks</h3>
+<p>LIFO (Last In, First Out) structure. Items added and removed from the top only. Example: undo operations.</p>
+<h2>Difference: Data Type vs Data Structure</h2>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th>Data Type</th><th>Data Structure</th></tr></thead><tbody>
+<tr><td>Definition</td><td>Classification of data (what kind of value)</td><td>Way of organising/storing multiple data items</td></tr>
+<tr><td>Examples</td><td>Integer, String, Boolean</td><td>Array, Stack, Queue, Record</td></tr>
+<tr><td>Complexity</td><td>Simple / Primitive</td><td>Composite / Complex</td></tr>
+</tbody></table></div>`
+  }
+];
+
+const M4_TOPICS = [
+  {
+    id:'m4t1', num:'Chapter: Hardware', title:'Computer Hardware – Peripherals and Components',
+    term:'First Term', type:'Theory',
+    content:`<h1>Computer Hardware – Peripherals and Components</h1>
+<h2>Input Peripherals</h2>
+<div class="table-wrap"><table><thead><tr><th>Device</th><th>Description</th></tr></thead><tbody>
+<tr><td>Keyboard</td><td>Most common input device; enters text and commands.</td></tr>
+<tr><td>Mouse</td><td>Points and clicks on-screen objects (GUI).</td></tr>
+<tr><td>Scanner</td><td>Captures hardcopy (paper) and converts to digital.</td></tr>
+<tr><td>Microphone</td><td>Captures audio input.</td></tr>
+<tr><td>Webcam</td><td>Captures video images.</td></tr>
+<tr><td>Touchscreen</td><td>Acts as both input AND output device.</td></tr>
+<tr><td>OMR Reader</td><td>Reads marks on specially designed forms (e.g., exam sheets).</td></tr>
+<tr><td>OCR Reader</td><td>Reads printed/handwritten characters.</td></tr>
+<tr><td>RFID Reader</td><td>Reads radio tags (e.g., library books, access cards).</td></tr>
+<tr><td>QR Code Reader</td><td>Reads 2D barcodes containing encoded information.</td></tr>
+<tr><td>Biometric sensor</td><td>Fingerprint, iris, face recognition.</td></tr>
+</tbody></table></div>
+<h2>Output Peripherals</h2>
+<div class="table-wrap"><table><thead><tr><th>Device</th><th>Description</th></tr></thead><tbody>
+<tr><td>Monitor/VDU</td><td>Displays visual output. LED, LCD, OLED types.</td></tr>
+<tr><td>Printer</td><td>Produces hardcopy output (paper). Inkjet, laser, 3D.</td></tr>
+<tr><td>Speakers</td><td>Output audio.</td></tr>
+<tr><td>Plotter</td><td>Draws precise line drawings; used in CAD/engineering.</td></tr>
+<tr><td>3D Printer</td><td>Creates 3D physical objects from digital designs.</td></tr>
+<tr><td>Actuator</td><td>Converts electrical signals into physical movement (used in control systems).</td></tr>
+</tbody></table></div>
+<h2>Internal CPU Components</h2>
+<ul>
+<li><strong>ALU (Arithmetic Logic Unit):</strong> Performs arithmetic (+, -, ×, ÷) and logic (comparisons) operations.</li>
+<li><strong>Control Unit (CU):</strong> Fetches, decodes, and executes instructions; coordinates all CPU activities.</li>
+<li><strong>Registers:</strong> Small, fast storage locations inside the CPU. Examples: Program Counter (PC), Accumulator (ACC), Instruction Register (IR), MAR, MDR.</li>
+<li><strong>Cache Memory:</strong> Very fast memory between CPU and RAM. Stores frequently used data.</li>
+</ul>
+<h2>Machine Instruction Cycle (Fetch-Decode-Execute)</h2>
+<ol>
+<li><strong>Fetch:</strong> Control unit fetches next instruction from RAM into the CPU.</li>
+<li><strong>Decode:</strong> Control unit decodes the instruction to understand what it means.</li>
+<li><strong>Execute:</strong> ALU or appropriate unit executes the instruction.</li>
+</ol>
+<h2>Storage Devices</h2>
+<div class="table-wrap"><table><thead><tr><th>Device</th><th>Type</th><th>Notes</th></tr></thead><tbody>
+<tr><td>RAM</td><td>Primary, Volatile</td><td>Stores currently running programs; lost on power off.</td></tr>
+<tr><td>ROM</td><td>Primary, Non-volatile</td><td>Stores BIOS; cannot be changed by user.</td></tr>
+<tr><td>Hard Disk Drive (HDD)</td><td>Secondary</td><td>Magnetic storage; large capacity, slower.</td></tr>
+<tr><td>Solid State Drive (SSD)</td><td>Secondary, Solid-state</td><td>Fast, no moving parts; expensive per GB.</td></tr>
+<tr><td>USB Flash Drive</td><td>Secondary, Solid-state</td><td>Portable; plug and play.</td></tr>
+<tr><td>Optical Disc (CD/DVD)</td><td>Secondary</td><td>Reads/writes using laser.</td></tr>
+</tbody></table></div>`
+  },
+  {
+    id:'m4t2', num:'Chapter: Networks', title:'Data Communication and Computer Networks',
+    term:'First Term', type:'Theory',
+    content:`<h1>Data Communication and Computer Networks</h1>
+<h2>1. Communication Modes</h2>
+<div class="table-wrap"><table><thead><tr><th>Mode</th><th>Direction</th><th>Example</th></tr></thead><tbody>
+<tr><td>Simplex</td><td>One direction only</td><td>TV broadcast, keyboard to computer</td></tr>
+<tr><td>Half Duplex</td><td>Both directions, but not simultaneously</td><td>Walkie-talkie</td></tr>
+<tr><td>Full Duplex</td><td>Both directions simultaneously</td><td>Telephone call, video call</td></tr>
+</tbody></table></div>
+<h2>2. Network Types</h2>
+<div class="table-wrap"><table><thead><tr><th>Type</th><th>Full Name</th><th>Coverage</th><th>Example</th></tr></thead><tbody>
+<tr><td>PAN</td><td>Personal Area Network</td><td>~10 metres</td><td>Bluetooth devices</td></tr>
+<tr><td>LAN</td><td>Local Area Network</td><td>Building/campus</td><td>School network</td></tr>
+<tr><td>MAN</td><td>Metropolitan Area Network</td><td>City</td><td>City cable network</td></tr>
+<tr><td>WAN</td><td>Wide Area Network</td><td>Country/world</td><td>Internet</td></tr>
+</tbody></table></div>
+<h2>3. Network Topologies</h2>
+<ul>
+<li><strong>Bus:</strong> All devices connected to a single cable. Simple but single point of failure.</li>
+<li><strong>Star:</strong> All devices connect to a central hub/switch. Most common; easy to manage.</li>
+<li><strong>Ring:</strong> Each device connected to two others in a circle. Data travels in one direction.</li>
+<li><strong>Mesh:</strong> Every device connected to every other. Highly fault-tolerant but expensive.</li>
+</ul>
+<h2>4. Network Devices</h2>
+<div class="table-wrap"><table><thead><tr><th>Device</th><th>Function</th></tr></thead><tbody>
+<tr><td>Hub</td><td>Sends data to all connected devices (no intelligence).</td></tr>
+<tr><td>Switch</td><td>Sends data only to the target device (intelligent hub).</td></tr>
+<tr><td>Router</td><td>Connects different networks; directs data packets between them.</td></tr>
+<tr><td>Modem</td><td>Modulates/demodulates signals for internet connection.</td></tr>
+<tr><td>Repeater</td><td>Boosts signal strength over long distances.</td></tr>
+<tr><td>Bridge</td><td>Connects two similar networks together.</td></tr>
+</tbody></table></div>
+<h2>5. Network Protocols</h2>
+<div class="table-wrap"><table><thead><tr><th>Protocol</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>TCP/IP</td><td>Main internet protocol; handles addressing and data transmission</td></tr>
+<tr><td>HTTP/HTTPS</td><td>Web browsing (HTTPS is secure)</td></tr>
+<tr><td>FTP</td><td>File transfer</td></tr>
+<tr><td>SMTP</td><td>Sending emails</td></tr>
+<tr><td>POP3/IMAP</td><td>Receiving emails</td></tr>
+<tr><td>DNS</td><td>Translates domain names to IP addresses</td></tr>
+</tbody></table></div>`
+  },
+  {
+    id:'m4t3', num:'Chapter: Logic Gates', title:'Logic Gates and Boolean Algebra',
+    term:'Third Term', type:'Theory + Practical',
+    content:`<h1>Logic Gates and Boolean Algebra</h1>
+<h2>1. Logic Gates</h2>
+<div class="def-box">A <strong>logic gate</strong> is an electronic circuit with one or more inputs and one output, performing a basic logic operation. Logic 1 = HIGH = True; Logic 0 = LOW = False.</div>
+<div class="table-wrap"><table><thead><tr><th>Gate</th><th>Symbol</th><th>Operation</th><th>Output Rule</th></tr></thead><tbody>
+<tr><td>AND</td><td>D-shape with flat back</td><td>A AND B</td><td>Output is 1 ONLY if ALL inputs are 1</td></tr>
+<tr><td>OR</td><td>Curved shield shape</td><td>A OR B</td><td>Output is 1 if ANY input is 1</td></tr>
+<tr><td>NOT</td><td>Triangle with circle</td><td>NOT A</td><td>Output is opposite of input</td></tr>
+<tr><td>NAND</td><td>AND + circle at output</td><td>NOT(A AND B)</td><td>Output is 0 ONLY if ALL inputs are 1</td></tr>
+<tr><td>NOR</td><td>OR + circle at output</td><td>NOT(A OR B)</td><td>Output is 1 ONLY if ALL inputs are 0</td></tr>
+<tr><td>XOR</td><td>OR with extra curve</td><td>A XOR B</td><td>Output is 1 if inputs are DIFFERENT</td></tr>
+<tr><td>XNOR</td><td>XOR + circle</td><td>NOT(A XOR B)</td><td>Output is 1 if inputs are the SAME</td></tr>
+</tbody></table></div>
+<h2>2. Truth Tables</h2>
+<div class="table-wrap"><table><thead><tr><th>A</th><th>B</th><th>AND</th><th>OR</th><th>NAND</th><th>NOR</th><th>XOR</th><th>XNOR</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+</tbody></table></div>
+<h2>3. De Morgan's Laws</h2>
+<div class="info-box">
+<strong>First Law:</strong> NOT(A AND B) = (NOT A) OR (NOT B)<br>
+<strong>Second Law:</strong> NOT(A OR B) = (NOT A) AND (NOT B)<br>
+<em>These laws allow you to simplify logic expressions and substitute gates.</em>
+</div>
+<h2>4. Boolean Algebra Laws</h2>
+<ul>
+<li><strong>Identity:</strong> A AND 1 = A; A OR 0 = A</li>
+<li><strong>Null:</strong> A AND 0 = 0; A OR 1 = 1</li>
+<li><strong>Idempotent:</strong> A AND A = A; A OR A = A</li>
+<li><strong>Complement:</strong> A AND NOT A = 0; A OR NOT A = 1</li>
+<li><strong>Double Negation:</strong> NOT(NOT A) = A</li>
+</ul>`
+  },
+  {
+    id:'m4t4', num:'Chapter: Numbers', title:'Number Systems',
+    term:'All Terms', type:'Theory + Practical',
+    content:`<h1>Number Systems</h1>
+<h2>Common Number Systems</h2>
+<div class="table-wrap"><table><thead><tr><th>System</th><th>Base</th><th>Digits Used</th><th>Use</th></tr></thead><tbody>
+<tr><td>Binary</td><td>2</td><td>0, 1</td><td>Computer's native language</td></tr>
+<tr><td>Octal</td><td>8</td><td>0–7</td><td>Compact representation</td></tr>
+<tr><td>Decimal</td><td>10</td><td>0–9</td><td>Everyday use</td></tr>
+<tr><td>Hexadecimal</td><td>16</td><td>0–9, A–F</td><td>Memory addresses, colour codes</td></tr>
+</tbody></table></div>
+<h2>Converting Between Number Systems</h2>
+<h3>Decimal to Binary</h3>
+<div class="info-box">Repeatedly divide by 2 and read remainders from bottom to top.<br>
+<strong>Example:</strong> 25 ÷ 2 = 12 r1 → 12 ÷ 2 = 6 r0 → 6 ÷ 2 = 3 r0 → 3 ÷ 2 = 1 r1 → 1 ÷ 2 = 0 r1<br>
+25₁₀ = 11001₂</div>
+<h3>Binary to Decimal</h3>
+<div class="info-box">Multiply each bit by its place value (powers of 2) and add.<br>
+<strong>Example:</strong> 1011₂ = (1×8) + (0×4) + (1×2) + (1×1) = 8+0+2+1 = 11₁₀</div>
+<h3>Hexadecimal Digits</h3>
+<div class="table-wrap"><table><thead><tr><th>Hex</th><th>Decimal</th><th>Binary</th></tr></thead><tbody>
+<tr><td>0–9</td><td>0–9</td><td>0000–1001</td></tr>
+<tr><td>A</td><td>10</td><td>1010</td></tr>
+<tr><td>B</td><td>11</td><td>1011</td></tr>
+<tr><td>C</td><td>12</td><td>1100</td></tr>
+<tr><td>D</td><td>13</td><td>1101</td></tr>
+<tr><td>E</td><td>14</td><td>1110</td></tr>
+<tr><td>F</td><td>15</td><td>1111</td></tr>
+</tbody></table></div>
+<h3>Hex to Binary</h3>
+<div class="info-box">Replace each hex digit with its 4-bit binary equivalent.<br>
+<strong>Example:</strong> 2E₁₆ → 2=0010, E=1110 → 00101110₂</div>
+<h3>Octal to Binary</h3>
+<div class="info-box">Replace each octal digit with its 3-bit binary equivalent.<br>
+<strong>Example:</strong> 7₈ = 111₂; 326₈ = 011 010 110₂</div>
+<h2>ASCII Code</h2>
+<div class="def-box"><strong>ASCII (American Standard Code for Information Interchange)</strong> assigns a unique 7-bit binary code to each character (letters, digits, symbols).</div>
+<p>Example: 'A' = 65₁₀ = 01000001₂; 'a' = 97₁₀</p>`
+  },
+  {
+    id:'m4t5', num:'Chapter: HTML', title:'Web Authoring – HTML',
+    term:'Second Term', type:'Theory + Practical',
+    content:`<h1>Web Authoring – HTML (HyperText Markup Language)</h1>
+<div class="def-box"><strong>HTML</strong> is the standard language used to create web pages. It uses tags (enclosed in angle brackets) to structure content.</div>
+<h2>Basic HTML Structure</h2>
+<div class="info-box">
+&lt;!DOCTYPE html&gt;<br>
+&lt;html&gt;<br>
+&nbsp;&nbsp;&lt;head&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;My Page&lt;/title&gt;<br>
+&nbsp;&nbsp;&lt;/head&gt;<br>
+&nbsp;&nbsp;&lt;body&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Hello World&lt;/h1&gt;<br>
+&nbsp;&nbsp;&lt;/body&gt;<br>
+&lt;/html&gt;
+</div>
+<h2>Common HTML Tags</h2>
+<div class="table-wrap"><table><thead><tr><th>Tag</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>&lt;h1&gt;–&lt;h6&gt;</td><td>Headings (h1 = largest)</td></tr>
+<tr><td>&lt;p&gt;</td><td>Paragraph</td></tr>
+<tr><td>&lt;a href=""&gt;</td><td>Hyperlink</td></tr>
+<tr><td>&lt;img src=""&gt;</td><td>Image</td></tr>
+<tr><td>&lt;ul&gt; / &lt;ol&gt;</td><td>Unordered / Ordered list</td></tr>
+<tr><td>&lt;li&gt;</td><td>List item</td></tr>
+<tr><td>&lt;table&gt;</td><td>Table</td></tr>
+<tr><td>&lt;tr&gt;</td><td>Table row</td></tr>
+<tr><td>&lt;td&gt;</td><td>Table data cell</td></tr>
+<tr><td>&lt;th&gt;</td><td>Table header cell</td></tr>
+<tr><td>&lt;br&gt;</td><td>Line break</td></tr>
+<tr><td>&lt;hr&gt;</td><td>Horizontal rule (dividing line)</td></tr>
+<tr><td>&lt;b&gt; / &lt;strong&gt;</td><td>Bold text</td></tr>
+<tr><td>&lt;i&gt; / &lt;em&gt;</td><td>Italic text</td></tr>
+<tr><td>&lt;!-- --&gt;</td><td>Comment</td></tr>
+</tbody></table></div>
+<h2>HTML Attributes</h2>
+<p>Attributes provide additional information about elements. They appear inside the opening tag.</p>
+<div class="info-box">
+<strong>Examples:</strong><br>
+&lt;a href="https://example.com" target="_blank"&gt;Click here&lt;/a&gt;<br>
+&lt;img src="photo.jpg" alt="Description" width="200"&gt;<br>
+&lt;p style="color:red;"&gt;Red text&lt;/p&gt;
+</div>
+<h2>HTML Lists</h2>
+<div class="info-box">
+<strong>Unordered list (&lt;ul&gt;):</strong> Bullet points<br>
+<strong>Ordered list (&lt;ol&gt;):</strong> Numbered list<br>
+Each item uses &lt;li&gt; tag.
+</div>`
+  }
+];
+
+// Render module lists
+let m1Current = 0, m2Current = 0, m3Current = 0, m4Current = 0;
+
+function renderModuleList(topics, listId, moduleNum) {
+  const el = document.getElementById(listId);
+  el.innerHTML = topics.map((t,i) => `
+    <button class="lesson-btn" onclick="showLesson(${moduleNum},${i})">
+      <span class="lesson-num">${t.num}</span>
+      <span class="lesson-name">${t.title}</span>
+      <span class="lesson-type">${t.type}</span>
+    </button>
+  `).join('');
+}
+function renderM1List(){ renderModuleList(M1_TOPICS,'m1-list',1); }
+function renderM2List(){ renderModuleList(M2_TOPICS,'m2-list',2); }
+function renderM3List(){ renderModuleList(M3_TOPICS,'m3-list',3); }
+function renderM4List(){ renderModuleList(M4_TOPICS,'m4-list',4); }
+
+function showLesson(mod, idx) {
+  const maps = { 1: M1_TOPICS, 2: M2_TOPICS, 3: M3_TOPICS, 4: M4_TOPICS };
+  const topics = maps[mod];
+  const topic = topics[idx];
+  if(mod===1){ m1Current=idx; document.getElementById('m1-body').innerHTML=topic.content; document.getElementById('m1-crumb').textContent=topic.title; document.getElementById('module1-list').style.display='none'; document.getElementById('module1-content').style.display='block'; }
+  if(mod===2){ m2Current=idx; document.getElementById('m2-body').innerHTML=topic.content; document.getElementById('m2-crumb').textContent=topic.title; document.getElementById('module2-list').style.display='none'; document.getElementById('module2-content').style.display='block'; }
+  if(mod===3){ m3Current=idx; document.getElementById('m3-body').innerHTML=topic.content; document.getElementById('m3-crumb').textContent=topic.title; document.getElementById('module3-list').style.display='none'; document.getElementById('module3-content').style.display='block'; }
+  if(mod===4){ m4Current=idx; document.getElementById('m4-body').innerHTML=topic.content; document.getElementById('m4-crumb').textContent=topic.title; document.getElementById('module4-list').style.display='none'; document.getElementById('module4-content').style.display='block'; }
+  window.scrollTo(0,0);
+}
+function showM1List(){ document.getElementById('module1-list').style.display='block'; document.getElementById('module1-content').style.display='none'; }
+function showM2List(){ document.getElementById('module2-list').style.display='block'; document.getElementById('module2-content').style.display='none'; }
+function showM3List(){ document.getElementById('module3-list').style.display='block'; document.getElementById('module3-content').style.display='none'; }
+function showM4List(){ document.getElementById('module4-list').style.display='block'; document.getElementById('module4-content').style.display='none'; }
+
+function m1Nav(d){ m1Current=Math.max(0,Math.min(M1_TOPICS.length-1,m1Current+d)); showLesson(1,m1Current); }
+function m2Nav(d){ m2Current=Math.max(0,Math.min(M2_TOPICS.length-1,m2Current+d)); showLesson(2,m2Current); }
+function m3Nav(d){ m3Current=Math.max(0,Math.min(M3_TOPICS.length-1,m3Current+d)); showLesson(3,m3Current); }
+function m4Nav(d){ m4Current=Math.max(0,Math.min(M4_TOPICS.length-1,m4Current+d)); showLesson(4,m4Current); }
+
+// PAST PAPERS
+function renderPapers2(){
+  const papers = [
+    { year:'2026', region:'South West Regional Mock', papers:['Paper 1 – MCQ','Paper 2 – Structured','Paper 3 – Practical'], color:'rgba(0,102,51,0.3)' },
+    { year:'2025', region:'HIHS Mock – Yaounde', papers:['Paper 1 – MCQ','Paper 2 – Structured'], color:'rgba(52,152,219,0.3)' },
+    { year:'2025', region:'Far North Mock', papers:['Paper 2 – Structured'], color:'rgba(155,89,182,0.3)' },
+    { year:'2025', region:'Littoral Regional Mock', papers:['Paper 1 – MCQ'], color:'rgba(231,76,60,0.3)' },
+    { year:'2024', region:'HIHS Mock – Yaounde', papers:['Paper 1 – MCQ','Paper 2 – Structured','Paper 3 – Practical'], color:'rgba(255,165,0,0.3)' },
+    { year:'2019', region:'Centre Mock', papers:['Paper 1 – MCQ','Paper 3 – Practical'], color:'rgba(0,200,200,0.3)' },
+    { year:'2010–2015', region:'GCE Past Questions', papers:['Paper 2 – Structured (with answers)'], color:'rgba(255,215,0,0.3)' }
+  ];
+  document.getElementById('papers-grid').innerHTML = papers.map(p=>`
+    <div class="topic-card" onclick="window.location.href='part5_mockpapers.html'">
+      <div class="topic-card-header" style="background:${p.color}">
+        <span class="topic-icon">📜</span>
+        <div><h3>${p.region}</h3><div class="term">${p.year}</div></div>
+      </div>
+      <div class="topic-card-body"><p>${p.papers.join(' · ')}</p></div>
+      <div class="topic-card-footer"><span class="lessons">${p.papers.length} paper(s)</span><button class="go-btn">Attempt →</button></div>
+    </div>
+  `).join('');
+}
+
+// QUIZ TOPICS
+function renderQuizTopics(){
+  const topics = [
+    { name:'Mixed – All Topics', desc:'Random questions from all topics', icon:'🎯', count:50 },
+    { name:'Computer Hardware', desc:'CPU, memory, peripherals, storage', icon:'🖥️', count:30 },
+    { name:'Software & OS', desc:'Operating systems, applications, utilities', icon:'💿', count:25 },
+    { name:'Algorithms & Programming', desc:'Pseudocode, flowcharts, logic', icon:'⌨️', count:30 },
+    { name:'Networks & Internet', desc:'LAN, WAN, protocols, topologies', icon:'🌐', count:25 },
+    { name:'Databases', desc:'Tables, keys, SQL, normalisation', icon:'🗄️', count:20 },
+    { name:'Number Systems', desc:'Binary, hex, octal conversions', icon:'🔢', count:20 },
+    { name:'Logic Gates', desc:'Truth tables, Boolean algebra', icon:'⚡', count:20 },
+    { name:'Information Systems', desc:'TPS, MIS, DSS, EIS', icon:'📊', count:15 },
+    { name:'Ethics & Legislation', desc:'Data protection, computer misuse', icon:'⚖️', count:15 }
+  ];
+  document.getElementById('quiz-topic-grid').innerHTML = topics.map(t=>`
+    <div class="topic-card" onclick="startQuiz('${t.name}')">
+      <div class="topic-card-header" style="background:rgba(255,215,0,0.1)">
+        <span class="topic-icon">${t.icon}</span>
+        <div><h3>${t.name}</h3><div class="term">${t.count} Questions</div></div>
+      </div>
+      <div class="topic-card-body"><p>${t.desc}</p></div>
+      <div class="topic-card-footer"><span class="lessons">🎯 Graded</span><button class="go-btn">Start →</button></div>
+    </div>
+  `).join('');
+}
+
+function startQuiz(topicName){
+  // Redirect to quiz file
+  sessionStorage.setItem('quizTopic', topicName);
+  window.location.href='part3_quiz.html';
+}
+
+// STRUCTURED QUESTIONS
+function renderStructured(){
+  const questions = [
+    { num:1, topic:'Information Systems & Database', src:'HIHS Mock 2025', marks:20, q:'RAINCO is a wholesale business specialising in two umbrella categories: Standard and Premium. Orders are placed via phone, with doorstep delivery. A minimum order of 25 umbrellas is required. RAINCO plans to expand by introducing online sales and adding two new categories: Sport and Travel. They aim to implement a new information system...' },
+    { num:2, topic:'CPU & Algorithms', src:'HIHS Mock 2025', marks:20, q:'(a) The Central Processing Unit has 3 main parts. State the function of each. (b) The following algorithm is intended to read three numbers and determine their product...' },
+    { num:3, topic:'Networks & Security', src:'SW Mock 2026', marks:20, q:'Describe the different types of network topology. Discuss the advantages and disadvantages of each. Explain security measures that can be applied to protect a network...' },
+    { num:4, topic:'SDLC & Project Management', src:'GCE Past', marks:20, q:'(a) Describe FOUR stages of the System Development Life Cycle. (b) Explain the difference between parallel and pilot changeover strategies. (c) Draw a Gantt chart for a project with 5 tasks...' },
+    { num:5, topic:'Logic Gates & Boolean Algebra', src:'Multiple Sources', marks:20, q:'(a) Draw the truth table for a NAND gate. (b) Apply De Morgan\'s law to simplify: NOT(A AND B). (c) Construct a logic circuit for the expression: (A AND B) OR (NOT C)...' }
+  ];
+  document.getElementById('structured-list').innerHTML = questions.map(q=>`
+    <div class="topic-card" style="margin-bottom:14px" onclick="window.location.href='part4_structured.html'">
+      <div class="topic-card-header" style="background:rgba(52,152,219,0.15)">
+        <span class="topic-icon">📄</span>
+        <div><h3>Question ${q.num} – ${q.topic}</h3><div class="term">${q.src} · ${q.marks} marks</div></div>
+      </div>
+      <div class="topic-card-body"><p style="font-size:12px;color:rgba(255,255,255,0.5)">${q.q.substring(0,120)}...</p></div>
+      <div class="topic-card-footer"><span class="lessons">📝 ${q.marks} marks</span><button class="go-btn">Attempt →</button></div>
+    </div>
+  `).join('');
+}
+
+// ADMIN
+// ── ALL 52 STUDENTS (for admin full-class view)
+const FULL_CLASS = [
+  {cin:"116285040",name:"ABIA LORDINHO LEE"},
+  {cin:"116285033",name:"ACHARA RISA EMAKUN"},
+  {cin:"116285090",name:"AFUH CARINE NGUM"},
+  {cin:"116285048",name:"AJEDMO NAMI SYLVIE INGEE"},
+  {cin:"116285088",name:"AKWO DAMARIS EMMA"},
+  {cin:"116285076",name:"ANCHI NADINE ANJA"},
+  {cin:"116285051",name:"ANDINE JOSOPHINE BABILA"},
+  {cin:"116285001",name:"ASONGATABONG MBIANDJI DIEUDONNE EBI"},
+  {cin:"116285049",name:"ASSAH RUDOFF KEKUMI"},
+  {cin:"116285046",name:"AVUMBOM FAVOUR"},
+  {cin:"116285026",name:"AWAH MIGUEL PRECIOUS WOTOH"},
+  {cin:"116285056",name:"AYUK EGBE STACY"},
+  {cin:"116285027",name:"AZONG ACHAH OCHAL"},
+  {cin:"116285019",name:"BANDJEM MKWESLEY TONIAN"},
+  {cin:"116285065",name:"BERN LEAH NDUM"},
+  {cin:"116285061",name:"CHEFOR BRIGHTNEY NGONGEH"},
+  {cin:"116285062",name:"CHEFOR BURNSLEY FO'O-ZO"},
+  {cin:"116285050",name:"CHIA RIHANNA MADAH SIH"},
+  {cin:"116285064",name:"CLAUDINE SHIWOME"},
+  {cin:"116285099",name:"DAVID AKEM DISONGE"},
+  {cin:"116285007",name:"EBANI BLAISE ESOE"},
+  {cin:"116285098",name:"EBOA STEPHEN BALIKI"},
+  {cin:"116285073",name:"ELUM FAVOUR OZEN"},
+  {cin:"116285038",name:"ESUKWE KERA BOSEMEH"},
+  {cin:"116285020",name:"FOKOH CLARIS CLEAR"},
+  {cin:"116285085",name:"GINAH MIKERA AFOR"},
+  {cin:"116285023",name:"KUM NELLY-BRIGHT BENG"},
+  {cin:"116285103",name:"LAROMI CARINE GORROTI"},
+  {cin:"116285079",name:"LEKEAKA EMMANUELA ATEHNJU"},
+  {cin:"116285089",name:"LUM LIZETTE"},
+  {cin:"116285002",name:"MBAH ASHELY ENGOH"},
+  {cin:"116285066",name:"MBUBI CLERIJOYCE PANGMEH"},
+  {cin:"116285013",name:"MENSEH CHEALSE NAMON"},
+  {cin:"116285036",name:"MOKOLI PENIEL NYAMA"},
+  {cin:"116285052",name:"NAMINA GLORY MALIKE"},
+  {cin:"116285008",name:"NDITAH ALEXIM TAMENJOH"},
+  {cin:"116285022",name:"NDO VANESSA ONYA"},
+  {cin:"116285075",name:"NEWEH TREVORE NGELON"},
+  {cin:"116285015",name:"NGOMBA SALOME"},
+  {cin:"116285016",name:"NGUFOR BERLINE FLORE TAMETA"},
+  {cin:"116285035",name:"NGULEFAC DAVID ATEAWUNG"},
+  {cin:"116285009",name:"NGWA PASCAL NJENJI"},
+  {cin:"116285068",name:"NGWESSE ROWLLINGS DIABE"},
+  {cin:"116285031",name:"NKWENYI VICTORY NSANNEH"},
+  {cin:"116285094",name:"NOTO CHRISTIANA NYAMA"},
+  {cin:"116285014",name:"NTOUBE SIANA MAROLE"},
+  {cin:"116285010",name:"NYAME FAVOUR DIONE"},
+  {cin:"116285012",name:"PEWAKE GODWILL WOPENASE"},
+  {cin:"116285072",name:"ROBERT BETOTO MUDIKA"},
+  {cin:"116285032",name:"SAMA ALCASIM FIAGMENYI"},
+  {cin:"116285058",name:"TAMPA DANIEL TABU"},
+  {cin:"116285110",name:"VICTOR-BLOSSOM MAKAINLY"},
+  {cin:"116285000",name:"VELUYEN"}
+];
+
+function buildAllStudentsRows(serverSummary){
+  // Build lookup from server data
+  const lookup = {};
+  (serverSummary||[]).forEach(s=>{ lookup[s.cin]=s; });
+
+  // Merge full class with server data
+  return FULL_CLASS.map((student, i) => {
+    const data = lookup[student.cin] || { logins:0, totalDuration:0, quizAvg:null, quizCount:0, devices:[], lastSeen:null };
+    const hasLoggedIn = data.logins > 0;
+    const hasQuiz = data.quizCount > 0;
+
+    // Status
+    let statusBadge, rowStyle;
+    if(hasLoggedIn && hasQuiz){
+      statusBadge = '<span style="background:rgba(46,204,113,0.15);color:#2ecc71;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700">🟢 Active</span>';
+      rowStyle = '';
+    } else if(hasLoggedIn){
+      statusBadge = '<span style="background:rgba(240,192,64,0.12);color:#f0c040;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700">🟡 Logged In</span>';
+      rowStyle = '';
+    } else {
+      statusBadge = '<span style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);padding:3px 10px;border-radius:10px;font-size:11px">⚪ Never</span>';
+      rowStyle = 'opacity:0.5';
+    }
+
+    const lastSeen = data.lastSeen
+      ? new Date(data.lastSeen).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+
+    const totalTime = data.totalDuration
+      ? Math.floor(data.totalDuration/60)+'m '+(data.totalDuration%60)+'s'
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+
+    const quizAvgHtml = data.quizAvg !== null
+      ? `<span style="color:${data.quizAvg>=50?'#2ecc71':'#e74c3c'};font-weight:700">${data.quizAvg}%</span>`
+      : '<span style="color:rgba(255,255,255,0.2)">–</span>';
+
+    const devices = (data.devices||[]).join(', ') || '<span style="color:rgba(255,255,255,0.2)">–</span>';
+
+    return `<tr style="${rowStyle}" data-name="${student.name.toLowerCase()}" data-cin="${student.cin}">
+      <td style="color:rgba(255,255,255,0.4);font-size:12px">${i+1}</td>
+      <td style="font-weight:600;color:#f0f6fc">${student.name}</td>
+      <td style="font-family:monospace;font-size:11px;color:var(--gold)">${student.cin}</td>
+      <td>${statusBadge}</td>
+      <td style="text-align:center;font-weight:${hasLoggedIn?'700':'400'};color:${hasLoggedIn?'#f0f6fc':'rgba(255,255,255,0.2)'}">${data.logins||'0'}</td>
+      <td style="font-size:12px">${lastSeen}</td>
+      <td style="font-size:12px">${totalTime}</td>
+      <td>${quizAvgHtml}</td>
+      <td style="text-align:center;color:${hasQuiz?'#f0c040':'rgba(255,255,255,0.2)'}">${data.quizCount||'0'}</td>
+      <td style="font-size:11px;color:rgba(255,255,255,0.6)">${devices}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterStudents(){
+  const q = (document.getElementById('studentSearch')||{value:''}).value.toLowerCase();
+  const rows = document.querySelectorAll('#allStudentsBody tr');
+  let visible = 0;
+  rows.forEach(row=>{
+    const match = !q || row.dataset.name?.includes(q) || row.dataset.cin?.includes(q);
+    row.style.display = match ? '' : 'none';
+    if(match) visible++;
+  });
+  const ct = document.getElementById('studentCount');
+  if(ct) ct.textContent = q ? `${visible} of ${FULL_CLASS.length} students` : `${FULL_CLASS.length} students`;
+}
+
+async function renderAdmin(){
+  if(!isAdmin){ document.getElementById('admin-content').innerHTML='<p style="color:#ff6b6b">Access denied.</p>'; return; }
+  
+  document.getElementById('admin-content').innerHTML = `
+    <div style="text-align:center;padding:30px;color:rgba(255,255,255,0.4)">
+      <div style="font-size:32px;margin-bottom:10px">⏳</div>
+      Loading live data from server...
+    </div>`;
+
+  let serverData = null;
+  try {
+    const resp = await fetch('/api/admin', { headers: { 'x-admin-token': 'ADMIN2026' } });
+    serverData = await resp.json();
+  } catch(e) {
+    console.error('Server fetch failed:', e);
+  }
+
+  // Fallback to localStorage if server unreachable
+  const logs = serverData ? [] : JSON.parse(localStorage.getItem('accessLogs')||'[]');
+  const durationLogs = JSON.parse(localStorage.getItem('durationLogs')||'[]');
+  const quizResults = serverData ? serverData.quizResults : JSON.parse(localStorage.getItem('quizResults')||'[]');
+
+  const sessions = serverData ? serverData.sessions : logs;
+  const totals = serverData ? serverData.totals : {
+    totalSessions: sessions.length,
+    uniqueStudents: [...new Set(sessions.map(s=>s.cin))].length,
+    quizzesTaken: quizResults.length,
+    avgDuration: durationLogs.length ? Math.round(durationLogs.reduce((a,l)=>a+l.duration,0)/durationLogs.length) : 0
+  };
+  const studentSummary = serverData ? serverData.studentSummary : [];
+
+  const passCount = quizResults.filter(r=>r.score>=50).length;
+  const avgMins = Math.floor(totals.avgDuration/60);
+  const avgSecs = totals.avgDuration%60;
+
+  document.getElementById('admin-content').innerHTML = `
+    <div style="background:rgba(0,173,159,0.08);border:1px solid rgba(0,173,159,0.2);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:rgba(0,173,159,0.9)">
+      ${serverData ? '🟢 Live data from server — updates every login in real time' : '⚠️ Showing local data — server connection failed. Deploy the server to see all students.'}
+    </div>
+
+    <!-- STATS -->
+    <div class="welcome-grid">
+      <div class="stat-card"><span class="ico">🔑</span><div class="num">${totals.totalSessions}</div><div class="lbl">Total Logins</div></div>
+      <div class="stat-card"><span class="ico">👥</span><div class="num">${totals.uniqueStudents}/${FULL_CLASS.length}</div><div class="lbl">Active/Enrolled</div></div>
+      <div class="stat-card"><span class="ico">⏱️</span><div class="num">${avgMins}m${avgSecs}s</div><div class="lbl">Avg Session</div></div>
+      <div class="stat-card"><span class="ico">📝</span><div class="num">${totals.quizzesTaken}</div><div class="lbl">Quizzes</div></div>
+      <div class="stat-card"><span class="ico">✅</span><div class="num">${passCount}</div><div class="lbl">Quiz Passes</div></div>
+      <div class="stat-card"><span class="ico">👨‍🏫</span><div class="num" style="font-size:13px">Mr Ngwana<br>Joshua</div><div class="lbl">Teacher</div></div>
+    </div>
+
+    <!-- SESSION LOG -->
+    <div class="section-header" style="margin-top:20px"><h2>📋 Login Sessions (Most Recent First)</h2></div>
+    <div style="background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,0.07)">
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>#</th><th>Name</th><th>CIN</th><th>Login Time</th>
+          <th>Duration</th><th>Device</th><th>Browser</th><th>OS</th><th>Location</th>
+        </tr></thead>
+        <tbody>
+          ${sessions.length===0
+            ? '<tr><td colspan="9" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3);font-style:italic">No sessions yet. Students must log in for data to appear here.</td></tr>'
+            : sessions.slice(0,100).map((s,i)=>{
+                const dur = s.duration ? Math.floor(s.duration/60)+'m '+(s.duration%60)+'s' : '<span style="color:rgba(255,255,255,0.3)">Active…</span>';
+                const loc = s.location ? `<a href="https://maps.google.com/?q=${s.location}" target="_blank" style="color:#58a6ff;font-size:11px">📍 Map</a>` : '<span style="color:rgba(255,255,255,0.25)">–</span>';
+                const dev = s.deviceLabel || (s.deviceType==='mobile'?'📱 Phone':s.deviceType==='tablet'?'📲 Tablet':'💻 Computer');
+                const dt = new Date(s.loginTime||s.time).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                return `<tr>
+                  <td style="color:rgba(255,255,255,0.4)">${i+1}</td>
+                  <td style="font-weight:600;color:#f0f6fc">${s.name}</td>
+                  <td style="font-family:monospace;font-size:12px;color:var(--gold)">${s.cin}</td>
+                  <td style="font-size:12px">${dt}</td>
+                  <td>${dur}</td>
+                  <td style="font-size:12px">${dev}</td>
+                  <td style="font-size:11px;color:rgba(255,255,255,0.6)">${s.browser||'–'}</td>
+                  <td style="font-size:11px;color:rgba(255,255,255,0.6)">${s.os||'–'}</td>
+                  <td>${loc}</td>
+                </tr>`;
+              }).join('')
+          }
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- QUIZ RESULTS -->
+    <div class="section-header" style="margin-top:20px"><h2>🏆 Quiz Results</h2></div>
+    <div style="background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,0.07)">
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>CIN</th><th>Topic</th><th>Score</th><th>Correct</th><th>Date</th></tr></thead>
+        <tbody>
+          ${quizResults.length===0
+            ? '<tr><td colspan="6" style="text-align:center;padding:24px;color:rgba(255,255,255,0.3);font-style:italic">No quiz results yet.</td></tr>'
+            : quizResults.slice(0,100).map(r=>`
+              <tr>
+                <td style="font-weight:600">${r.name}</td>
+                <td style="font-family:monospace;font-size:12px;color:var(--gold)">${r.cin}</td>
+                <td style="font-size:12px">${r.topic}</td>
+                <td><span style="color:${r.score>=50?'#2ecc71':'#e74c3c'};font-weight:700">${r.score}%</span></td>
+                <td style="font-size:12px">${r.correct||'–'}/${r.total||'–'}</td>
+                <td style="font-size:12px">${new Date(r.date).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+              </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ALL 52 STUDENTS TABLE -->
+    <div class="section-header" style="margin-top:20px">
+      <h2>👥 All Students (${FULL_CLASS.length} registered)</h2>
+      <p>Showing all Form 5 students — colour coded by activity status</p>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:12px">
+      <span style="color:#2ecc71">🟢 Active — logged in</span>
+      <span style="color:#f0c040">🟡 Partial — logged in but no quizzes</span>
+      <span style="color:rgba(255,255,255,0.3)">⚪ Never logged in</span>
+    </div>
+    <div style="background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,0.07)">
+      <div style="padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <input id="studentSearch" placeholder="🔍 Search student name or CIN…" oninput="filterStudents()"
+          style="-webkit-user-select:text;user-select:text;flex:1;min-width:180px;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;outline:none">
+        <span style="font-size:12px;color:rgba(255,255,255,0.4);align-self:center" id="studentCount"></span>
+      </div>
+      <div class="table-wrap"><table id="allStudentsTable">
+        <thead><tr>
+          <th>#</th><th>Name</th><th>CIN</th><th>Status</th>
+          <th>Logins</th><th>Last Seen</th><th>Total Time</th>
+          <th>Quiz Avg</th><th>Quizzes</th><th>Devices Used</th>
+        </tr></thead>
+        <tbody id="allStudentsBody">
+          ${buildAllStudentsRows(studentSummary)}
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <button onclick="window.open('/api/export?token=ADMIN2026','_blank')" style="background:rgba(46,204,113,0.2);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;padding:11px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700">📥 Export All Data (CSV)</button>
+      <button onclick="renderAdmin()" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.3);color:#3498db;padding:11px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700">🔄 Refresh</button>
+      <button onclick="clearServerLogs('sessions')" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);color:#ff6b6b;padding:11px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700">🗑️ Clear Sessions</button>
+      <button onclick="clearServerLogs('quiz')" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);color:#ff6b6b;padding:11px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700">🗑️ Clear Quiz Results</button>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;padding:6px">
+      👨‍🏫 Teacher: Mr Ngwana Joshua &nbsp;·&nbsp; GHS Mbonjo Limbe – Department of Computer Science &nbsp;·&nbsp; Form 5 CS 0595
+    </div>
+  `;
+}
+
+async function clearServerLogs(type){
+  if(!confirm('Clear '+type+' data? This cannot be undone.')) return;
+  try {
+    await fetch('/api/admin/clear', {
+      method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-token':'ADMIN2026'},
+      body: JSON.stringify({type})
+    });
+    renderAdmin();
+  } catch(e) {
+    alert('Error clearing data: '+e.message);
+  }
+}
+
+}
+
+  let csv = 'Type,CIN,Name,Detail,Score,Date\n';
+  logs.forEach(l=>{ csv+=`Login,"${l.cin}","${l.name}","Login recorded","–","${l.time}"\n`; });
+  qrs.forEach(r=>{ csv+=`Quiz,"${r.cin}","${r.name}","${r.topic}","${r.score}%","${r.date}"\n`; });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='GHSMbonjo_CS_Admin_Data.csv'; a.click();
+}
+</script>
+</body>
+</html>
